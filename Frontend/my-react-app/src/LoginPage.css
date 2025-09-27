@@ -1,0 +1,133 @@
+/* src/LoginPage.css */
+
+.login-container {
+  display: flex;
+  height: 100vh; /* Ocupa 100% da altura da tela */
+  width: 100%;   /* Ocupa 100% da largura */
+}
+
+.login-art-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  
+  background-image: 
+    /* A imagem de fundo do bar que você escolheu */
+    url('https://images.unsplash.com/photo-1568644396922-5c3bfae12521?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  
+  background-size: cover; /* Faz a imagem cobrir toda a área */
+  background-position: center; /* Centraliza a imagem */
+}
+
+
+.illustration-img {
+  max-width: 80%;
+  height: auto;
+}
+
+.login-form-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+}
+
+.form-wrapper {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+}
+
+.form-wrapper h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.form-wrapper p {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #444;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.label-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.forgot-password {
+  font-size: 0.9rem;
+  color: #646cff;
+  text-decoration: none;
+}
+
+.remember-me-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.remember-me-group input {
+  margin-right: 0.5rem;
+}
+
+.login-button {
+  width: 100%;
+  padding: 1rem;
+  background-color: #646cff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.login-button:hover {
+  background-color: #535bf2;
+}
+
+.create-account-link {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+
+.test-credentials {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f0f2f5;
+  border-radius: 8px;
+  border: 1px dashed #ccc;
+  text-align: left;
+  color: #555;
+}
+
+.test-credentials p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
