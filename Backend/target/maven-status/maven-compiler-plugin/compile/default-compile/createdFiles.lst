@@ -1,0 +1,8 @@
+br\com\bardosom\api\controller\ClienteController.class
+br\com\bardosom\api\TesteConexao.class
+br\com\bardosom\api\controller\EventoController$EventoRequest.class
+br\com\bardosom\api\ApiApplication.class
+br\com\bardosom\api\controller\EventoController.class
+br\com\bardosom\api\dao\ClienteDAO.class
+br\com\bardosom\api\controller\ClienteController$ClienteRequest.class
+br\com\bardosom\api\dao\EventoDAO.class
