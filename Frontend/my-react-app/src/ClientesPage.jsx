@@ -1,22 +1,55 @@
 // src/ClientesPage.jsx
-import React from 'react';
-import './ClientesPage.css'; // Importando o CSS que vamos criar
+import React, { useState, useEffect } from 'react';
+import './ClientesPage.css';
 
-// Dados de exemplo (mock) que virão do back-end no futuro
-const mockClientes = [
-  { id_cliente: 1, nome: 'Ana Carolina', email: 'ana.carolina@email.com', telefone: '(81) 98877-6655', data_nascimento: '1995-03-15' },
-  { id_cliente: 2, nome: 'Bruno Santos', email: 'bruno.santos@email.com', telefone: '(81) 99988-7766', data_nascimento: '1990-07-22' },
-  { id_cliente: 3, nome: 'Carla Dias', email: 'carla.dias@email.com', telefone: '(81) 98765-4321', data_nascimento: '2001-11-10' },
-  { id_cliente: 4, nome: 'Daniel Oliveira', email: 'daniel.oliveira@email.com', telefone: '(81) 99123-4567', data_nascimento: '1988-01-30' },
-];
+const API_URL = 'http://localhost:8080/clientes';
 
 function ClientesPage() {
+  const [clientes, setClientes] = useState([]);
+
+  const fetchTodosClientes = async () => {
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setClientes(data);
+    } catch (error) {
+      console.error("Erro ao buscar clientes:", error);
+      alert("Falha ao buscar clientes. Verifique o console para mais detalhes.");
+    }
+  };
+
+  // ALTERADO: Nome da função e URL
+  const fetchClientesMaiores30 = async () => {
+    try {
+      const response = await fetch(`${API_URL}/maiores30`); // URL alterada
+       if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setClientes(data);
+    } catch (error) {
+      console.error("Erro ao buscar clientes maiores de 30:", error); // Mensagem de erro alterada
+      alert("Falha ao buscar clientes filtrados. Verifique o console para mais detalhes.");
+    }
+  };
+
+  useEffect(() => {
+    fetchTodosClientes();
+  }, []);
+
   return (
-    // Envolvemos a página em um layout similar ao do Dashboard para consistência
     <div className="page-container">
       <header className="page-header">
         <h1>Gerenciamento de Clientes</h1>
-        <button className="add-button">Adicionar Novo Cliente</button>
+        <div>
+          <button className="add-button">Adicionar Novo Cliente</button>
+          <button className="filter-button" onClick={fetchTodosClientes}>Listar Todos</button>
+          {/* ALTERADO: Texto do botão e função onClick */}
+          <button className="filter-button" onClick={fetchClientesMaiores30}>Listar Maiores de 30</button>
+        </div>
       </header>
       
       <div className="table-container">
@@ -27,16 +60,18 @@ function ClientesPage() {
               <th>Nome</th>
               <th>Email</th>
               <th>Telefone</th>
+              <th>Nascimento</th>
               <th>Ações</th>
             </tr>
           </thead>
           <tbody>
-            {mockClientes.map((cliente) => (
-              <tr key={cliente.id_cliente}>
+            {clientes.map((cliente) => (
+              <tr key={cliente.id_cliente}> 
                 <td>{cliente.id_cliente}</td>
                 <td>{cliente.nome}</td>
                 <td>{cliente.email}</td>
                 <td>{cliente.telefone}</td>
+                <td>{cliente.data_nascimento}</td>
                 <td>
                   <div className="action-buttons">
                     <button className="edit-button">Alterar</button>
