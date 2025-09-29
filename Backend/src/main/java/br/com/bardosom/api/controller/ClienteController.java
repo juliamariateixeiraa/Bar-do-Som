@@ -5,16 +5,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/clientes") // Rota base: http://localhost:8080/clientes
-@CrossOrigin(origins = "http://localhost:5173") // Permite acesso do Front-end React
+@RequestMapping("/clientes")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ClienteController {
 
     @Autowired
     private ClienteDAO clienteDAO;
+
+    @GetMapping
+    public List<Map<String, Object>> listarTodosClientes() {
+        return clienteDAO.listarClientesComDadosDePedidos();
+    }
 
     @PostMapping("/cadastrar")
     public ResponseEntity<String> cadastrarCliente(@RequestBody ClienteRequest clienteRequest) {
@@ -32,39 +38,19 @@ public class ClienteController {
         }
     }
 
-    //endpoint: amanda
-    @GetMapping
-    public List<Map<String, Object>> listarTodosClientes() {
-        return clienteDAO.listarTodos();
+    @GetMapping("/buscar")
+    public List<Map<String, Object>> buscarClientes(@RequestParam(required = false) String nome) {
+        if (nome == null || nome.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+        return clienteDAO.buscarPorNome(nome);
     }
 
-    @GetMapping("/maiores30")
-    public List<Map<String, Object>> listarClientesMaioresDe30() {
-        return clienteDAO.listarMaioresDe30();
+    @GetMapping("/gastos-acima-de")
+    public List<Map<String, Object>> listarClientesComGastosAcima(@RequestParam double valor) {
+        return clienteDAO.listarClientesQueGastaramAcimaDe(valor);
     }
 
-    @GetMapping("/stats/faixa-etaria")
-    public List<Map<String, Object>> getDadosGraficoFaixaEtaria() {
-        return clienteDAO.contarPorFaixaEtaria();
-    }
-
-
-    private static class ClienteRequest {
-        private String nome;
-        private String email;
-        private String dataNascimento;
-        private String telefone;
-
-        // Getters e Setters
-        public String getNome() { return nome; }
-        public void setNome(String nome) { this.nome = nome; }
-        public String getEmail() { return email; }
-        public void setEmail(String email) { this.email = email; }
-        public String getDataNascimento() { return dataNascimento; }
-        public void setDataNascimento(String dataNascimento) { this.dataNascimento = dataNascimento; }
-        public String getTelefone() { return telefone; }
-        public void setTelefone(String telefone) { this.telefone = telefone; }
-    }
     @PutMapping("/atualizar/{id}")
     public ResponseEntity<String> atualizarCliente(@PathVariable int id, @RequestBody ClienteRequest clienteRequest) {
         try {
@@ -81,6 +67,7 @@ public class ClienteController {
             return ResponseEntity.badRequest().body("Erro ao atualizar cliente: " + e.getMessage());
         }
     }
+
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<String> deletarCliente(@PathVariable int id) {
         try {
@@ -90,5 +77,22 @@ public class ClienteController {
             System.err.println("Erro ao deletar cliente: " + e.getMessage());
             return ResponseEntity.badRequest().body("Erro ao deletar cliente: " + e.getMessage());
         }
+    }
+
+    private static class ClienteRequest {
+        private String nome;
+        private String email;
+        private String dataNascimento;
+        private String telefone;
+
+        // Getters e Setters
+        public String getNome() { return nome; }
+        public void setNome(String nome) { this.nome = nome; }
+        public String getEmail() { return email; }
+        public void setEmail(String email) { this.email = email; }
+        public String getDataNascimento() { return dataNascimento; }
+        public void setDataNascimento(String dataNascimento) { this.dataNascimento = dataNascimento; }
+        public String getTelefone() { return telefone; }
+        public void setTelefone(String telefone) { this.telefone = telefone; }
     }
 }

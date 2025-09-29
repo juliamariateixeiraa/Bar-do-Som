@@ -160,3 +160,18 @@ tbody tr:last-child td {
 .btn-adicionar:hover {
     background-color: #286090; /* Tom mais escuro de azul */
 }
+
+.filtro-select {
+  padding: 8px 12px;
+  margin-left: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.filtro-select:focus {
+  outline: none;
+  border-color: #007bff;
+}
