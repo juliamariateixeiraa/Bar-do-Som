@@ -1,6 +1,6 @@
-C:\Users\PC\OneDrive\Documentos\Pessoais\Desktop\bar\Bar-do-Som\Backend\src\main\java\br\com\bardosom\api\ApiApplication.java
-C:\Users\PC\OneDrive\Documentos\Pessoais\Desktop\bar\Bar-do-Som\Backend\src\main\java\br\com\bardosom\api\controller\ClienteController.java
-C:\Users\PC\OneDrive\Documentos\Pessoais\Desktop\bar\Bar-do-Som\Backend\src\main\java\br\com\bardosom\api\controller\EventoController.java
-C:\Users\PC\OneDrive\Documentos\Pessoais\Desktop\bar\Bar-do-Som\Backend\src\main\java\br\com\bardosom\api\dao\ClienteDAO.java
-C:\Users\PC\OneDrive\Documentos\Pessoais\Desktop\bar\Bar-do-Som\Backend\src\main\java\br\com\bardosom\api\dao\EventoDAO.java
-C:\Users\PC\OneDrive\Documentos\Pessoais\Desktop\bar\Bar-do-Som\Backend\src\main\java\br\com\bardosom\api\TesteConexao.java
+/Users/juliamariateixeira/Desktop/Bar-do-Som/Backend/src/main/java/br/com/bardosom/api/ApiApplication.java
+/Users/juliamariateixeira/Desktop/Bar-do-Som/Backend/src/main/java/br/com/bardosom/api/TesteConexao.java
+/Users/juliamariateixeira/Desktop/Bar-do-Som/Backend/src/main/java/br/com/bardosom/api/controller/ClienteController.java
+/Users/juliamariateixeira/Desktop/Bar-do-Som/Backend/src/main/java/br/com/bardosom/api/controller/EventoController.java
+/Users/juliamariateixeira/Desktop/Bar-do-Som/Backend/src/main/java/br/com/bardosom/api/dao/ClienteDAO.java
+/Users/juliamariateixeira/Desktop/Bar-do-Som/Backend/src/main/java/br/com/bardosom/api/dao/EventoDAO.java

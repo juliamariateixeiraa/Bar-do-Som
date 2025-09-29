@@ -65,4 +65,30 @@ public class ClienteController {
         public String getTelefone() { return telefone; }
         public void setTelefone(String telefone) { this.telefone = telefone; }
     }
+    @PutMapping("/atualizar/{id}")
+    public ResponseEntity<String> atualizarCliente(@PathVariable int id, @RequestBody ClienteRequest clienteRequest) {
+        try {
+            clienteDAO.atualizarCliente(
+                    id,
+                    clienteRequest.getNome(),
+                    clienteRequest.getEmail(),
+                    clienteRequest.getDataNascimento(),
+                    clienteRequest.getTelefone()
+            );
+            return ResponseEntity.ok("Cliente atualizado com sucesso!");
+        } catch (Exception e) {
+            System.err.println("Erro ao atualizar cliente: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Erro ao atualizar cliente: " + e.getMessage());
+        }
+    }
+    @DeleteMapping("/deletar/{id}")
+    public ResponseEntity<String> deletarCliente(@PathVariable int id) {
+        try {
+            clienteDAO.deletarCliente(id);
+            return ResponseEntity.ok("Cliente deletado com sucesso!");
+        } catch (Exception e) {
+            System.err.println("Erro ao deletar cliente: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Erro ao deletar cliente: " + e.getMessage());
+        }
+    }
 }

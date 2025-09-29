@@ -76,4 +76,32 @@ public class EventoController {
         public int getPublicoEstimado() { return publicoEstimado; }
         public void setPublicoEstimado(int publicoEstimado) { this.publicoEstimado = publicoEstimado; }
     }
+    @PutMapping("/atualizar/{id}")
+    public ResponseEntity<String> atualizarEvento(@PathVariable int id, @RequestBody EventoRequest eventoRequest) {
+        try {
+            eventoDAO.atualizarEvento(
+                    id,
+                    eventoRequest.getNome(),
+                    eventoRequest.getData(),
+                    eventoRequest.getHora(),
+                    eventoRequest.getValorIngresso(),
+                    eventoRequest.getPublicoEstimado()
+            );
+            return ResponseEntity.ok("Evento atualizado com sucesso!");
+        } catch (Exception e) {
+            System.err.println("Erro ao atualizar evento: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Erro ao atualizar evento: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/deletar/{id}")
+    public ResponseEntity<String> deletarEvento(@PathVariable int id) {
+        try {
+            eventoDAO.deletarEvento(id);
+            return ResponseEntity.ok("Evento deletado com sucesso!");
+        } catch (Exception e) {
+            System.err.println("Erro ao deletar evento: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Erro ao deletar evento: " + e.getMessage());
+        }
+    }
 }

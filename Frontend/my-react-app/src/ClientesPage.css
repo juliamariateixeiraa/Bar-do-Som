@@ -100,3 +100,63 @@ tbody tr:last-child td {
 .delete-button:hover {
   background-color: #fecaca;
 }
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* --- Estilos CORRIGIDOS para os botões --- */
+
+/* Base para os botões de ação na tabela */
+.acoes button {
+    background-color: transparent;
+    border: 1px solid;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-right: 5px;
+    transition: all 0.2s ease;
+}
+
+/* Botão Editar (Azul transparente) */
+.btn-editar {
+    border-color: #337ab7;
+    color: #337ab7;
+}
+
+.btn-editar:hover {
+    background-color: #337ab7;
+    color: white;
+}
+
+/* Botão Excluir (Vermelho transparente) */
+.btn-excluir {
+    border-color: #d9534f;
+    color: #d9534f;
+}
+
+.btn-excluir:hover {
+    background-color: #d9534f;
+    color: white;
+}
+
+/* Botão Adicionar (Azul sólido e "lindo") */
+.btn-adicionar {
+    background-color: #337ab7;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-adicionar:hover {
+    background-color: #286090; /* Tom mais escuro de azul */
+}

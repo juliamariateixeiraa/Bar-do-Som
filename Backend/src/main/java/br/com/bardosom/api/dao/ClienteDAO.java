@@ -13,35 +13,38 @@ public class ClienteDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    public List<Map<String, Object>> listarTodos() {
+        String sql = "SELECT id, nome, email, data_nascimento, telefone FROM clientes";
+        return jdbcTemplate.queryForList(sql);
+    }
+
     public void inserirCliente(String nome, String email, String dataNascimento, String telefone) {
-        String sql = "INSERT INTO Cliente (nome, email, data_nascimento, telefone) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO clientes (nome, email, data_nascimento, telefone) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(sql, nome, email, dataNascimento, telefone);
     }
 
-    //buscar e retornar os clientes
-    public List<Map<String, Object>> listarTodos() {
-        // CORREÇÃO AQUI: Trocamos 'id' por 'id_cliente'
-        String sql = "SELECT id_cliente, nome, email, DATE_FORMAT(data_nascimento, '%d/%m/%Y') as data_nascimento, telefone FROM Cliente";
-        return jdbcTemplate.queryForList(sql);
+    public void atualizarCliente(int id, String nome, String email, String dataNascimento, String telefone) {
+        String sql = "UPDATE clientes SET nome = ?, email = ?, data_nascimento = ?, telefone = ? WHERE id = ?";
+        jdbcTemplate.update(sql, nome, email, dataNascimento, telefone, id);
     }
 
-    //clientes maiores de 30
+    public void deletarCliente(int id) {
+        String sql = "DELETE FROM clientes WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
     public List<Map<String, Object>> listarMaioresDe30() {
-        // ALTERADO: de > 18 para > 30
-        String sql = "SELECT id_cliente, nome, email, DATE_FORMAT(data_nascimento, '%d/%m/%Y') as data_nascimento, telefone " +
-                "FROM Cliente WHERE TIMESTAMPDIFF(YEAR, data_nascimento, CURDATE()) > 30";
+        String sql = "SELECT * FROM clientes WHERE TIMESTAMPDIFF(YEAR, data_nascimento, CURDATE()) > 30";
         return jdbcTemplate.queryForList(sql);
     }
 
-    //agrupar clientes por faixa etaria para grafico
     public List<Map<String, Object>> contarPorFaixaEtaria() {
         String sql = "SELECT CASE " +
-                "WHEN TIMESTAMPDIFF(YEAR, data_nascimento, CURDATE()) <= 17 THEN 'Menor de 18' " +
+                "WHEN TIMESTAMPDIFF(YEAR, data_nascimento, CURDATE()) < 18 THEN 'Menor de 18' " +
                 "WHEN TIMESTAMPDIFF(YEAR, data_nascimento, CURDATE()) BETWEEN 18 AND 30 THEN '18-30 anos' " +
                 "WHEN TIMESTAMPDIFF(YEAR, data_nascimento, CURDATE()) BETWEEN 31 AND 50 THEN '31-50 anos' " +
-                "ELSE 'Mais de 50' " +
-                "END as faixa_etaria, COUNT(*) as total " +
-                "FROM Cliente GROUP BY faixa_etaria";
+                "ELSE 'Maior de 50' END as faixa_etaria, COUNT(*) as quantidade " +
+                "FROM clientes GROUP BY faixa_etaria";
         return jdbcTemplate.queryForList(sql);
     }
 }
