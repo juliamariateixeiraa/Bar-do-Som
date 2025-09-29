@@ -39,24 +39,28 @@ public class EventoController {
     public List<Map<String, Object>> listarTodosEventos() {
         return eventoDAO.listarTodos();
     }
-
-    @GetMapping("/periodo")
-    public List<Map<String, Object>> listarEventosPorPeriodo(@RequestParam String inicio, @RequestParam String fim) {
-        return eventoDAO.listarPorPeriodo(inicio, fim);
-    }
-
-    @GetMapping("/stats/por-mes")
-    public List<Map<String, Object>> getDadosGraficoEventosPorMes() {
-        return eventoDAO.contarEventosPorMes();
-    }
-
+    
     @GetMapping("/com-clientes")
     public List<Map<String, Object>> getEventosComClientes() {
         return eventoDAO.listarClientesEmEventos();
     }
 
+    @GetMapping("/publicos-distintos")
+    public List<Map<String, Object>> getPublicosDistintos() {
+        return eventoDAO.listarPublicosEstimadosDistintos();
+    }
 
-    // Classe para mapear o JSON recebido do Frontend (DTO)
+    @GetMapping("/por-publico")
+    public List<Map<String, Object>> getEventosPorPublicoExato(@RequestParam int valor) {
+        return eventoDAO.listarPorPublicoExato(valor);
+    }
+
+    @GetMapping("/stats/melhor-mes")
+    public Map<String, Object> getMelhorMes() {
+        return eventoDAO.encontrarMesComMaiorPotencial();
+    }
+
+
     private static class EventoRequest {
         private String nome;
         private String data;

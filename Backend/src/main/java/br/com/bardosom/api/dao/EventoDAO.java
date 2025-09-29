@@ -47,4 +47,46 @@ public class EventoDAO {
         return new java.util.ArrayList<>();
     }
 
+    public List<Map<String, Object>> listarPublicosEstimadosDistintos() {
+        String sql = "SELECT DISTINCT publico_estimado FROM eventos WHERE publico_estimado % 2 = 0 ORDER BY publico_estimado ASC";
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    public List<Map<String, Object>> listarPorPublicoExato(int publico) {
+        String sql = "SELECT id, nome, data, hora, valor_ingresso, publico_estimado FROM eventos WHERE publico_estimado = ?";
+        return jdbcTemplate.queryForList(sql, publico);
+    }
+
+    public Map<String, Object> encontrarMesComMaiorPotencial() {
+        String sql = "SELECT " +
+                "    CASE MONTH(MAX(data)) " +
+                "        WHEN 1 THEN 'Janeiro' " +
+                "        WHEN 2 THEN 'Fevereiro' " +
+                "        WHEN 3 THEN 'Março' " +
+                "        WHEN 4 THEN 'Abril' " +
+                "        WHEN 5 THEN 'Maio' " +
+                "        WHEN 6 THEN 'Junho' " +
+                "        WHEN 7 THEN 'Julho' " +
+                "        WHEN 8 THEN 'Agosto' " +
+                "        WHEN 9 THEN 'Setembro' " +
+                "        WHEN 10 THEN 'Outubro' " +
+                "        WHEN 11 THEN 'Novembro' " +
+                "        WHEN 12 THEN 'Dezembro' " +
+                "    END AS mes, " +
+                "    SUM(valor_ingresso * publico_estimado) AS renda_potencial_total " +
+                "FROM " +
+                "    eventos " +
+                "GROUP BY " +
+                "    YEAR(data), MONTH(data) " +
+                "ORDER BY " +
+                "    renda_potencial_total DESC " +
+                "LIMIT 1";
+
+        List<Map<String, Object>> resultados = jdbcTemplate.queryForList(sql);
+        if (resultados.isEmpty()) {
+            return null;
+        }
+        return resultados.get(0);
+    }
+
 }
