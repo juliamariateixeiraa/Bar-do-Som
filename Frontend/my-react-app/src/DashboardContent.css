@@ -1,0 +1,31 @@
+/* src/DashboardContent.css */
+
+.graficos-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.grafico-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.grafico-card:hover {
+  transform: translateY(-5px);
+}
+
+.grafico-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.grafico-card h5 {
+  margin-top: 0.5rem;
+}

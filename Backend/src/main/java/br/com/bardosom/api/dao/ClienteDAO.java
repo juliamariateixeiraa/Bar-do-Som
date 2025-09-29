@@ -47,4 +47,5 @@ public class ClienteDAO {
                 "FROM clientes GROUP BY faixa_etaria";
         return jdbcTemplate.queryForList(sql);
     }
+    
 }
