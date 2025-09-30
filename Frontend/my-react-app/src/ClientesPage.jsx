@@ -13,6 +13,7 @@ const ClientesPage = () => {
     const [filtroAtivo, setFiltroAtivo] = useState('todos');
 
     const fetchClientes = () => {
+        // CORRIGIDO: Endpoint no singular
         fetch('http://localhost:8080/clientes')
             .then(response => {
                 if (!response.ok) throw new Error(`Erro HTTP! Status: ${response.status}`);
@@ -31,10 +32,11 @@ const ClientesPage = () => {
     }, []);
 
     const handleSearch = () => {
+        setFiltroAtivo('todos'); // Reseta o filtro ao buscar
         if (busca.trim() === "") {
             fetchClientes();
-            setFiltroAtivo('todos');
         } else {
+            // CORRIGIDO: Endpoint no singular
             fetch(`http://localhost:8080/clientes/buscar?nome=${encodeURIComponent(busca)}`)
                 .then(response => {
                     if (!response.ok) throw new Error(`Erro HTTP! Status: ${response.status}`);
@@ -50,54 +52,34 @@ const ClientesPage = () => {
     };
 
     const handleFiltroChange = (event) => {
-<<<<<<< HEAD
-<<<<<<< HEAD
-            const valorFiltro = event.target.value;
-            setFiltroAtivo(valorFiltro); 
-            setBusca("");
-=======
         const valorFiltro = event.target.value;
         setFiltroAtivo(valorFiltro);
->>>>>>> a6223a802f1ea850ef4ec57db71387dafe5e05ab
-=======
-        const valorFiltro = event.target.value;
-        setFiltroAtivo(valorFiltro); 
->>>>>>> parent of 37fc564 (front de evento e clientes)
+        setBusca(""); // Limpa o campo de busca ao usar filtro
 
-        setBusca("");
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-        const buscarPorGastoMinimo = (valor) => {
-            fetch(`http://localhost:8080/clientes/gastos-acima-de?valor=${valor}`)
-=======
-        if (valorFiltro === 'todos') {
-            fetchClientes();
-        } else if (valorFiltro === 'gastos_100') {
-            fetch('http://localhost:8080/clientes/gastos-acima-de?valor=100')
->>>>>>> a6223a802f1ea850ef4ec57db71387dafe5e05ab
-=======
-        if (valorFiltro === 'todos') {
-            fetchClientes(); 
-        } else if (valorFiltro === 'gastos_100') {
-            fetch('http://localhost:8080/clientes/gastos-acima-de?valor=100')
->>>>>>> parent of 37fc564 (front de evento e clientes)
+        const fetchComFiltro = (url) => {
+            fetch(url)
                 .then(response => {
                     if (!response.ok) throw new Error(`Erro HTTP! Status: ${response.status}`);
                     return response.json();
                 })
-                .then(data => {
-                    setClientes(Array.isArray(data) ? data : []);
-                })
+                .then(data => setClientes(Array.isArray(data) ? data : []))
                 .catch(error => {
                     console.error('Erro ao filtrar clientes:', error);
                     alert('Falha ao aplicar o filtro. Verifique o console.');
                     setClientes([]);
                 });
+        };
+
+        if (valorFiltro === 'todos') {
+            fetchClientes();
+        } else if (valorFiltro === 'gastos_100') {
+            // CORRIGIDO: Endpoint no singular
+            fetchComFiltro('http://localhost:8080/clientes/gastos-acima-de?valor=100');
         }
     };
 
     const handleCadastroCliente = (novoCliente) => {
+        // CORRIGIDO: Endpoint no singular
         fetch('http://localhost:8080/clientes/cadastrar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -115,9 +97,10 @@ const ClientesPage = () => {
         .catch(error => console.error('Erro ao cadastrar cliente:', error));
     };
 
-    const handleDeleteCliente = (id_cliente) => { // CORRIGIDO: id -> id_cliente
+    const handleDeleteCliente = (id_cliente) => {
         if (window.confirm('Tem certeza que deseja excluir este cliente?')) {
-            fetch(`http://localhost:8080/clientes/deletar/${id_cliente}`, { method: 'DELETE' }) // CORRIGIDO: id -> id_cliente
+            // CORRIGIDO: Endpoint no singular
+            fetch(`http://localhost:8080/clientes/deletar/${id_cliente}`, { method: 'DELETE' })
             .then(response => {
                 if (response.ok) {
                     alert('Cliente excluído com sucesso!');
@@ -136,11 +119,11 @@ const ClientesPage = () => {
     };
 
     const handleSaveCliente = (clienteAtualizado) => {
-        // O backend espera dataNascimento, então ajustamos o objeto
         const dadosParaApi = { ...clienteAtualizado, dataNascimento: clienteAtualizado.data_nascimento };
-        delete dadosParaApi.data_nascimento; // Remove a chave antiga
+        delete dadosParaApi.data_nascimento;
         
-        fetch(`http://localhost:8080/clientes/atualizar/${clienteAtualizado.id_cliente}`, { // CORRIGIDO: id -> id_cliente
+        // CORRIGIDO: Endpoint no singular
+        fetch(`http://localhost:8080/clientes/atualizar/${clienteAtualizado.id_cliente}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dadosParaApi),
@@ -173,23 +156,11 @@ const ClientesPage = () => {
                     placeholder="Pesquisar cliente por nome..."
                     value={busca}
                     onChange={(e) => setBusca(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                 />
                 <button onClick={handleSearch}>Buscar</button>
-<<<<<<< HEAD
                 
-<<<<<<< HEAD
-                <select 
-                    value={filtroAtivo} 
-                    onChange={handleFiltroChange} 
-                    className="filtro-select"
-                    >
-=======
-
                 <select value={filtroAtivo} onChange={handleFiltroChange} className="filtro-select">
->>>>>>> a6223a802f1ea850ef4ec57db71387dafe5e05ab
-=======
-                <select value={filtroAtivo} onChange={handleFiltroChange} className="filtro-select">
->>>>>>> parent of 37fc564 (front de evento e clientes)
                     <option value="todos">Filtrar por...</option>
                     <option value="gastos_100">Clientes que gastaram {'>'} R$ 100</option>
                 </select>
