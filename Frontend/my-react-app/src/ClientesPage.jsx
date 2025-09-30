@@ -33,7 +33,7 @@ const ClientesPage = () => {
     const handleSearch = () => {
         if (busca.trim() === "") {
             fetchClientes();
-            setFiltroAtivo('todos'); 
+            setFiltroAtivo('todos');
         } else {
             fetch(`http://localhost:8080/clientes/buscar?nome=${encodeURIComponent(busca)}`)
                 .then(response => {
@@ -50,9 +50,14 @@ const ClientesPage = () => {
     };
 
     const handleFiltroChange = (event) => {
+<<<<<<< HEAD
             const valorFiltro = event.target.value;
             setFiltroAtivo(valorFiltro); 
             setBusca("");
+=======
+        const valorFiltro = event.target.value;
+        setFiltroAtivo(valorFiltro);
+>>>>>>> a6223a802f1ea850ef4ec57db71387dafe5e05ab
 
             if (valorFiltro === 'todos') {
                 fetchClientes(); 
@@ -65,8 +70,15 @@ const ClientesPage = () => {
             }
         };
 
+<<<<<<< HEAD
         const buscarPorGastoMinimo = (valor) => {
             fetch(`http://localhost:8080/clientes/gastos-acima-de?valor=${valor}`)
+=======
+        if (valorFiltro === 'todos') {
+            fetchClientes();
+        } else if (valorFiltro === 'gastos_100') {
+            fetch('http://localhost:8080/clientes/gastos-acima-de?valor=100')
+>>>>>>> a6223a802f1ea850ef4ec57db71387dafe5e05ab
                 .then(response => {
                     if (!response.ok) throw new Error(`Erro HTTP! Status: ${response.status}`);
                     return response.json();
@@ -96,44 +108,46 @@ const ClientesPage = () => {
         })
         .catch(error => console.error('Erro ao cadastrar cliente:', error));
     };
-    
-    const handleDeleteCliente = (id) => {
+
+    const handleDeleteCliente = (id_cliente) => { // CORRIGIDO: id -> id_cliente
         if (window.confirm('Tem certeza que deseja excluir este cliente?')) {
-            fetch(`http://localhost:8080/clientes/deletar/${id}`, { method: 'DELETE' })
-            .then(response => { 
-                if (response.ok) { 
-                    alert('Cliente excluído com sucesso!'); 
-                    fetchClientes(); 
-                } else { 
-                    alert('Erro ao excluir cliente.'); 
-                } 
+            fetch(`http://localhost:8080/clientes/deletar/${id_cliente}`, { method: 'DELETE' }) // CORRIGIDO: id -> id_cliente
+            .then(response => {
+                if (response.ok) {
+                    alert('Cliente excluído com sucesso!');
+                    fetchClientes();
+                } else {
+                    alert('Erro ao excluir cliente.');
+                }
             })
             .catch(error => console.error('Erro ao deletar cliente:', error));
         }
     };
 
-    const handleEditClick = (cliente) => { 
-        setClienteSelecionado(cliente); 
-        setIsEditModalOpen(true); 
+    const handleEditClick = (cliente) => {
+        setClienteSelecionado(cliente);
+        setIsEditModalOpen(true);
     };
 
     const handleSaveCliente = (clienteAtualizado) => {
+        // O backend espera dataNascimento, então ajustamos o objeto
         const dadosParaApi = { ...clienteAtualizado, dataNascimento: clienteAtualizado.data_nascimento };
-        delete dadosParaApi.data_nascimento;
-        fetch(`http://localhost:8080/clientes/atualizar/${clienteAtualizado.id}`, {
+        delete dadosParaApi.data_nascimento; // Remove a chave antiga
+        
+        fetch(`http://localhost:8080/clientes/atualizar/${clienteAtualizado.id_cliente}`, { // CORRIGIDO: id -> id_cliente
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dadosParaApi),
         })
-        .then(response => { 
-            if (response.ok) { 
-                alert('Cliente atualizado com sucesso!'); 
-                fetchClientes(); 
-                setIsEditModalOpen(false); 
-                setClienteSelecionado(null); 
-            } else { 
-                alert('Erro ao atualizar cliente.'); 
-            } 
+        .then(response => {
+            if (response.ok) {
+                alert('Cliente atualizado com sucesso!');
+                fetchClientes();
+                setIsEditModalOpen(false);
+                setClienteSelecionado(null);
+            } else {
+                alert('Erro ao atualizar cliente.');
+            }
         })
         .catch(error => console.error('Erro ao atualizar cliente:', error));
     };
@@ -155,12 +169,17 @@ const ClientesPage = () => {
                     onChange={(e) => setBusca(e.target.value)}
                 />
                 <button onClick={handleSearch}>Buscar</button>
+<<<<<<< HEAD
                 
                 <select 
                     value={filtroAtivo} 
                     onChange={handleFiltroChange} 
                     className="filtro-select"
                     >
+=======
+
+                <select value={filtroAtivo} onChange={handleFiltroChange} className="filtro-select">
+>>>>>>> a6223a802f1ea850ef4ec57db71387dafe5e05ab
                     <option value="todos">Filtrar por...</option>
                     <option value="gastos_100">Clientes que gastaram {'>'} R$ 100</option>
                     <option value="gastos_200">Clientes que gastaram {'>'} R$ 200</option>
@@ -184,20 +203,20 @@ const ClientesPage = () => {
                     </thead>
                     <tbody>
                         {clientes.map(cliente => (
-                            <tr key={cliente.id}>
-                                <td>{cliente.id}</td>
+                            <tr key={cliente.id_cliente}>
+                                <td>{cliente.id_cliente}</td>
                                 <td>{cliente.nome}</td>
                                 <td>{cliente.telefone}</td>
                                 <td>{cliente.quantidade_pedidos}</td>
                                 <td>{Number(cliente.total_gasto).toFixed(2)}</td>
                                 <td>
-                                    {cliente.ultimo_pedido 
-                                        ? new Date(cliente.ultimo_pedido).toLocaleString('pt-BR') 
+                                    {cliente.ultimo_pedido
+                                        ? new Date(cliente.ultimo_pedido).toLocaleString('pt-BR')
                                         : 'Nenhum pedido'}
                                 </td>
                                 <td className="acoes">
                                     <button onClick={() => handleEditClick(cliente)} className="btn-editar">Editar</button>
-                                    <button onClick={() => handleDeleteCliente(cliente.id)} className="btn-excluir">Excluir</button>
+                                    <button onClick={() => handleDeleteCliente(cliente.id_cliente)} className="btn-excluir">Excluir</button>
                                 </td>
                             </tr>
                         ))}

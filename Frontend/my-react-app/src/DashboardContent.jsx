@@ -14,6 +14,10 @@ import grafico8 from './assets/grafico8.png';
 import grafico9 from './assets/grafico9.png';
 import grafico10 from './assets/grafico10.png';
 import grafico11 from './assets/grafico11.png';
+import grafico12 from './assets/grafico12.png';
+import grafico13 from './assets/grafico13.png';
+import grafico14 from './assets/grafico14.png';
+import grafico15 from './assets/grafico15.png';
 
 
 
@@ -26,23 +30,22 @@ function DashboardContent() {
 
   // Estrutura de dados para os gráficos
    const graficosComLegenda = [
-    { imagem: grafico1, legenda: 'Mostra a contagem de gastos por gênero em faixas de valor.' },
-    { imagem: grafico2, legenda: 'Compara a frequência de visitas por faixa etária e período do dia.' },
-    { imagem: grafico3, legenda: 'Ilustra a distribuição percentual da preferência por tipo de bebida.' },
-    { imagem: grafico4, legenda: 'Compara a frequência de visitas por gênero e tipo de companhia.' },
-    { imagem: grafico5, legenda: 'Mostra a frequência de visitas por dia da semana e faixa etária.' },
-    { imagem: grafico6, legenda: 'Mostra a preferência musical por faixa etária.' },
-    { imagem: grafico7, legenda: 'Distribuição percentual do horário preferido para ir ao bar pelo gênero masculino.' },
-    { imagem: grafico8, legenda: 'Frequência de visitas ao bar para a faixa etária de 45-54 anos.' },
-    { imagem: grafico9, legenda: 'Mostra a preferência musical (tipo de show) do gênero feminino.' },
-    { imagem: grafico10, legenda: 'Mostra se o público de 18-24 anos frequenta o bar pela música.' },
-    { imagem: grafico11, legenda: 'Mostra o gasto por noite da faixa etária de 45-54 anos.' }, // <- Adicionado aqui
-    // Adiciona 3 placeholders para completar os 14 gráficos (11 reais + 3 placeholders)
-    ...Array.from({ length: 3 }, (_, i) => ({
-      imagem: `https://picsum.photos/seed/${i + 12}/400/300`,
-      legenda: `Gráfico ${i + 12}`
-    }))
-  ];
+  { imagem: grafico1, legenda: 'Mostra a contagem de gastos por gênero em faixas de valor.' },
+  { imagem: grafico2, legenda: 'Compara a frequência de visitas por faixa etária e período do dia.' },
+  { imagem: grafico3, legenda: 'Ilustra a distribuição percentual da preferência por tipo de bebida.' },
+  { imagem: grafico4, legenda: 'Compara a frequência de visitas por gênero e tipo de companhia.' },
+  { imagem: grafico5, legenda: 'Mostra a frequência de visitas por dia da semana e faixa etária.' },
+  { imagem: grafico6, legenda: 'Mostra a preferência musical por faixa etária.' },
+  { imagem: grafico7, legenda: 'Distribuição percentual do horário preferido para ir ao bar pelo gênero masculino.' },
+  { imagem: grafico8, legenda: 'Frequência de visitas ao bar para a faixa etária de 45-54 anos.' },
+  { imagem: grafico9, legenda: 'Mostra a preferência musical (tipo de show) do gênero feminino.' },
+  { imagem: grafico10, legenda: 'Mostra se o público de 18-24 anos frequenta o bar pela música.' },
+  { imagem: grafico11, legenda: 'Mostra o gasto por noite da faixa etária de 45-54 anos.' },
+  { imagem: grafico12, legenda: 'Relaciona o gasto por noite de clientes que frequentam o bar 2 a 3 vezes por mês.' }, // <-- Substitua pela legenda correta
+  { imagem: grafico13, legenda: 'Mostra o tipo de companhia preferido por clientes que frequentam o bar uma vez por mês.' }, // <-- Substitua pela legenda correta
+  { imagem: grafico14, legenda: 'Mostra a distribuição da preferência musical entre as diferentes faixas etárias.' }, // <-- Substitua pela legenda correta
+  { imagem: grafico15, legenda: 'Distribuição dos fatores que mais atraem o público masculino ao bar.' }  // <-- Substitua pela legenda correta
+];
 
 
   return (

@@ -16,14 +16,18 @@ const EventosPage = () => {
 
     const fetchEventos = () => {
         fetch('http://localhost:8080/eventos')
-            .then(response => response.json())
-            .then(data => setEventos(data))
-            .catch(error => console.error('Erro ao buscar eventos:', error));
+            .then(response => {
+                if (!response.ok) throw new Error('Falha ao buscar eventos');
+                return response.json();
+            })
+            .then(data => setEventos(Array.isArray(data) ? data : [])) // Garante que eventos seja sempre um array
+            .catch(error => {
+                console.error('Erro ao buscar eventos:', error);
+                setEventos([]); // Em caso de erro, define como array vazio para evitar o erro .map
+            });
     };
 
-    useEffect(() => {
-        fetchEventos();
-
+    const fetchDashboardData = () => {
         fetch('http://localhost:8080/eventos/publicos-distintos')
             .then(response => response.json())
             .then(data => setOpcoesPublico(data))
@@ -33,6 +37,11 @@ const EventosPage = () => {
             .then(response => response.json())
             .then(data => setMelhorMes(data))
             .catch(error => console.error('Erro ao buscar estatísticas do mês:', error));
+    };
+
+    useEffect(() => {
+        fetchEventos();
+        fetchDashboardData();
     }, []);
 
     const handleFiltroChange = (event) => {
@@ -44,8 +53,11 @@ const EventosPage = () => {
         } else {
             fetch(`http://localhost:8080/eventos/por-publico?valor=${valorFiltro}`)
                 .then(response => response.json())
-                .then(data => setEventos(data))
-                .catch(error => console.error('Erro ao filtrar eventos:', error));
+                .then(data => setEventos(Array.isArray(data) ? data : []))
+                .catch(error => {
+                    console.error('Erro ao filtrar eventos:', error)
+                    setEventos([]);
+                });
         }
     };
 
@@ -58,8 +70,8 @@ const EventosPage = () => {
         .then(response => {
             if (response.ok) {
                 alert('Evento cadastrado com sucesso!');
-                fetchEventos();
-                window.location.reload(); 
+                fetchEventos(); // Apenas busca os dados novamente
+                fetchDashboardData(); // Atualiza os dados do dashboard
                 setIsAddModalOpen(false);
             } else {
                 alert('Erro ao cadastrar evento.');
@@ -68,25 +80,25 @@ const EventosPage = () => {
         .catch(error => console.error('Erro ao cadastrar evento:', error));
     };
 
-    const handleDeleteEvento = (id) => {
+    const handleDeleteEvento = (id_evento) => { // CORRIGIDO
         if (window.confirm('Tem certeza que deseja excluir este evento?')) {
-            fetch(`http://localhost:8080/eventos/deletar/${id}`, { method: 'DELETE' })
-            .then(response => { 
-                if (response.ok) { 
-                    alert('Evento excluído com sucesso!'); 
-                    fetchEventos();
-                    window.location.reload(); 
-                } else { 
-                    alert('Erro ao excluir evento.'); 
+            fetch(`http://localhost:8080/eventos/deletar/${id_evento}`, { method: 'DELETE' }) // CORRIGIDO
+            .then(response => {
+                if (response.ok) {
+                    alert('Evento excluído com sucesso!');
+                    fetchEventos(); // Apenas busca os dados novamente
+                    fetchDashboardData(); // Atualiza os dados do dashboard
+                } else {
+                    alert('Erro ao excluir evento.');
                 }
             })
             .catch(error => console.error('Erro ao deletar evento:', error));
         }
     };
 
-    const handleEditClick = (evento) => { 
-        setEventoSelecionado(evento); 
-        setIsEditModalOpen(true); 
+    const handleEditClick = (evento) => {
+        setEventoSelecionado(evento);
+        setIsEditModalOpen(true);
     };
 
     const handleSaveEvento = (eventoAtualizado) => {
@@ -98,7 +110,7 @@ const EventosPage = () => {
             publicoEstimado: eventoAtualizado.publico_estimado
         };
 
-        fetch(`http://localhost:8080/eventos/atualizar/${eventoAtualizado.id}`, {
+        fetch(`http://localhost:8080/eventos/atualizar/${eventoAtualizado.id_evento}`, { // CORRIGIDO
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dadosParaApi),
@@ -106,8 +118,8 @@ const EventosPage = () => {
         .then(response => {
             if (response.ok) {
                 alert('Evento atualizado com sucesso!');
-                fetchEventos();
-                window.location.reload(); 
+                fetchEventos(); // Apenas busca os dados novamente
+                fetchDashboardData(); // Atualiza os dados do dashboard
                 setIsEditModalOpen(false);
                 setEventoSelecionado(null);
             } else {
@@ -165,8 +177,8 @@ const EventosPage = () => {
                     </thead>
                     <tbody>
                         {eventos.map(evento => (
-                            <tr key={evento.id}>
-                                <td>{evento.id}</td>
+                            <tr key={evento.id_evento}> {/* CORRIGIDO */}
+                                <td>{evento.id_evento}</td> {/* CORRIGIDO */}
                                 <td>{evento.nome}</td>
                                 <td>{evento.data}</td>
                                 <td>{evento.hora}</td>
@@ -174,7 +186,7 @@ const EventosPage = () => {
                                 <td>{evento.publico_estimado}</td>
                                 <td className="acoes">
                                     <button onClick={() => handleEditClick(evento)} className="btn-editar">Editar</button>
-                                    <button onClick={() => handleDeleteEvento(evento.id)} className="btn-excluir">Excluir</button>
+                                    <button onClick={() => handleDeleteEvento(evento.id_evento)} className="btn-excluir">Excluir</button> {/* CORRIGIDO */}
                                 </td>
                             </tr>
                         ))}

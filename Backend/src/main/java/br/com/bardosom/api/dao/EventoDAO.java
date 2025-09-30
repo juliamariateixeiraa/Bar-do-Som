@@ -14,7 +14,8 @@ public class EventoDAO {
     private JdbcTemplate jdbcTemplate;
 
     public List<Map<String, Object>> listarTodos() {
-        String sql = "SELECT id, nome, data, hora, valor_ingresso, publico_estimado FROM eventos";
+        // CORRETO: Usa id_evento
+        String sql = "SELECT id_evento, nome, data, hora, valor_ingresso, publico_estimado FROM eventos";
         return jdbcTemplate.queryForList(sql);
     }
 
@@ -23,18 +24,22 @@ public class EventoDAO {
         jdbcTemplate.update(sql, nome, data, hora, valorIngresso, publicoEstimado);
     }
 
-    public void atualizarEvento(int id, String nome, String data, String hora, double valorIngresso, int publicoEstimado) {
-        String sql = "UPDATE eventos SET nome = ?, data = ?, hora = ?, valor_ingresso = ?, publico_estimado = ? WHERE id = ?";
-        jdbcTemplate.update(sql, nome, data, hora, valorIngresso, publicoEstimado, id);
+    public void atualizarEvento(int id_evento, String nome, String data, String hora, double valorIngresso, int publicoEstimado) {
+        // CORRIGIDO: Usa id_evento no WHERE
+        String sql = "UPDATE eventos SET nome = ?, data = ?, hora = ?, valor_ingresso = ?, publico_estimado = ? WHERE id_evento = ?";
+        jdbcTemplate.update(sql, nome, data, hora, valorIngresso, publicoEstimado, id_evento);
     }
 
-    public void deletarEvento(int id) {
-        String sql = "DELETE FROM eventos WHERE id = ?";
-        jdbcTemplate.update(sql, id);
+    public void deletarEvento(int id_evento) {
+        // CORRIGIDO: Usa id_evento no WHERE
+        String sql = "DELETE FROM eventos WHERE id_evento = ?";
+        jdbcTemplate.update(sql, id_evento);
     }
 
     public List<Map<String, Object>> listarPorPeriodo(String inicio, String fim) {
-        String sql = "SELECT * FROM eventos WHERE data BETWEEN ? AND ?";
+        // Assumindo que sua tabela tem todas as colunas, usar '*' pode ser ok aqui,
+        // mas é sempre mais seguro listar as colunas explicitamente.
+        String sql = "SELECT id_evento, nome, data, hora, valor_ingresso, publico_estimado FROM eventos WHERE data BETWEEN ? AND ?";
         return jdbcTemplate.queryForList(sql, inicio, fim);
     }
 
@@ -44,6 +49,7 @@ public class EventoDAO {
     }
 
     public List<Map<String, Object>> listarClientesEmEventos() {
+        // Este método ainda está vazio.
         return new java.util.ArrayList<>();
     }
 
@@ -53,7 +59,8 @@ public class EventoDAO {
     }
 
     public List<Map<String, Object>> listarPorPublicoExato(int publico) {
-        String sql = "SELECT id, nome, data, hora, valor_ingresso, publico_estimado FROM eventos WHERE publico_estimado = ?";
+        // CORRIGIDO: Seleciona id_evento
+        String sql = "SELECT id_evento, nome, data, hora, valor_ingresso, publico_estimado FROM eventos WHERE publico_estimado = ?";
         return jdbcTemplate.queryForList(sql, publico);
     }
 
@@ -88,5 +95,4 @@ public class EventoDAO {
         }
         return resultados.get(0);
     }
-
 }

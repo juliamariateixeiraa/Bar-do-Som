@@ -13,31 +13,28 @@ public class ClienteDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    // Método não utilizado, mas corrigido por segurança.
     public List<Map<String, Object>> listarTodos() {
-        String sql = "SELECT id, nome, email, data_nascimento, telefone FROM clientes";
+        String sql = "SELECT id_cliente, nome, email, data_nascimento, telefone FROM clientes";
         return jdbcTemplate.queryForList(sql);
     }
 
     public List<Map<String, Object>> listarClientesComDadosDePedidos() {
         String sql = "SELECT " +
-                "    c.id, " +
+                "    c.id_cliente, " + // CORRIGIDO: id -> id_cliente
                 "    c.nome, " +
                 "    c.email, " +
                 "    c.telefone, " +
                 "    c.data_nascimento, " +
-                // Conta apenas pedidos que não estão com status 'cancelado'
                 "    COUNT(CASE WHEN p.status != 'cancelado' THEN p.id_pedido END) AS quantidade_pedidos, " +
-                // Soma o total apenas de pedidos com status 'concluído'
                 "    COALESCE(SUM(CASE WHEN p.status = 'concluído' THEN p.total ELSE 0 END), 0) AS total_gasto, " +
-                // Pega a data e hora do último pedido, independente do status
                 "    MAX(p.data_hora) AS ultimo_pedido " +
                 "FROM " +
                 "    clientes c " +
                 "LEFT JOIN " +
-                // Usando os nomes corretos da sua tabela e colunas
-                "    pedido p ON c.id = p.id_cliente " +
+                "    pedidos p ON c.id_cliente = p.id_cliente " + // CORRIGIDO: pedido -> pedidos e c.id -> c.id_cliente
                 "GROUP BY " +
-                "    c.id, c.nome, c.email, c.telefone, c.data_nascimento " +
+                "    c.id_cliente, c.nome, c.email, c.telefone, c.data_nascimento " + // CORRIGIDO: id -> id_cliente
                 "ORDER BY " +
                 "    c.nome";
         return jdbcTemplate.queryForList(sql);
@@ -48,19 +45,21 @@ public class ClienteDAO {
         jdbcTemplate.update(sql, nome, email, dataNascimento, telefone);
     }
 
+    // No frontend, lembre-se de que a propriedade agora é 'id_cliente'
     public void atualizarCliente(int id, String nome, String email, String dataNascimento, String telefone) {
-        String sql = "UPDATE clientes SET nome = ?, email = ?, data_nascimento = ?, telefone = ? WHERE id = ?";
+        String sql = "UPDATE clientes SET nome = ?, email = ?, data_nascimento = ?, telefone = ? WHERE id_cliente = ?"; // CORRIGIDO: id -> id_cliente
         jdbcTemplate.update(sql, nome, email, dataNascimento, telefone, id);
     }
 
+    // No frontend, lembre-se de que a propriedade agora é 'id_cliente'
     public void deletarCliente(int id) {
-        String sql = "DELETE FROM clientes WHERE id = ?";
+        String sql = "DELETE FROM clientes WHERE id_cliente = ?"; // CORRIGIDO: id -> id_cliente
         jdbcTemplate.update(sql, id);
     }
 
     public List<Map<String, Object>> buscarPorNome(String nome) {
         String sql = "SELECT " +
-                "    c.id, " +
+                "    c.id_cliente, " + // CORRIGIDO: id -> id_cliente
                 "    c.nome, " +
                 "    c.email, " +
                 "    c.telefone, " +
@@ -71,11 +70,11 @@ public class ClienteDAO {
                 "FROM " +
                 "    clientes c " +
                 "LEFT JOIN " +
-                "    pedido p ON c.id = p.id_cliente " +
+                "    pedidos p ON c.id_cliente = p.id_cliente " + // CORRIGIDO: pedido -> pedidos e c.id -> c.id_cliente
                 "WHERE " +
-                "    c.nome LIKE ? " + // AQUI ADICIONAMOS O FILTRO DA BUSCA
+                "    c.nome LIKE ? " +
                 "GROUP BY " +
-                "    c.id, c.nome, c.email, c.telefone, c.data_nascimento " +
+                "    c.id_cliente, c.nome, c.email, c.telefone, c.data_nascimento " + // CORRIGIDO: id -> id_cliente
                 "ORDER BY " +
                 "    c.nome";
 
@@ -85,7 +84,7 @@ public class ClienteDAO {
 
     public List<Map<String, Object>> listarClientesQueGastaramAcimaDe(double valorMinimo) {
         String sql = "SELECT " +
-                "    c.id, " +
+                "    c.id_cliente, " + // CORRIGIDO: id -> id_cliente
                 "    c.nome, " +
                 "    c.email, " +
                 "    c.telefone, " +
@@ -96,9 +95,9 @@ public class ClienteDAO {
                 "FROM " +
                 "    clientes c " +
                 "LEFT JOIN " +
-                "    pedido p ON c.id = p.id_cliente " +
+                "    pedidos p ON c.id_cliente = p.id_cliente " + // CORRIGIDO: pedido -> pedidos e c.id -> c.id_cliente
                 "GROUP BY " +
-                "    c.id, c.nome, c.email, c.telefone, c.data_nascimento " +
+                "    c.id_cliente, c.nome, c.email, c.telefone, c.data_nascimento " + // CORRIGIDO: id -> id_cliente
                 "HAVING " +
                 "    SUM(CASE WHEN p.status = 'concluído' THEN p.total ELSE 0 END) > ? " +
                 "ORDER BY " +
