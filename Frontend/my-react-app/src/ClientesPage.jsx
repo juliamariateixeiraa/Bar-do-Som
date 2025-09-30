@@ -50,28 +50,33 @@ const ClientesPage = () => {
     };
 
     const handleFiltroChange = (event) => {
-        const valorFiltro = event.target.value;
-        setFiltroAtivo(valorFiltro); 
+            const valorFiltro = event.target.value;
+            setFiltroAtivo(valorFiltro); 
+            setBusca("");
 
-        setBusca("");
+            if (valorFiltro === 'todos') {
+                fetchClientes(); 
+            } else if (valorFiltro === 'gastos_100') {
+                buscarPorGastoMinimo(100);
+            } else if (valorFiltro === 'gastos_200') {
+                buscarPorGastoMinimo(200);
+            } else if (valorFiltro === 'gastos_300') {
+                buscarPorGastoMinimo(300);
+            }
+        };
 
-        if (valorFiltro === 'todos') {
-            fetchClientes(); 
-        } else if (valorFiltro === 'gastos_100') {
-            fetch('http://localhost:8080/clientes/gastos-acima-de?valor=100')
+        const buscarPorGastoMinimo = (valor) => {
+            fetch(`http://localhost:8080/clientes/gastos-acima-de?valor=${valor}`)
                 .then(response => {
                     if (!response.ok) throw new Error(`Erro HTTP! Status: ${response.status}`);
                     return response.json();
                 })
-                .then(data => {
-                    setClientes(Array.isArray(data) ? data : []);
-                })
+                .then(data => setClientes(Array.isArray(data) ? data : []))
                 .catch(error => {
                     console.error('Erro ao filtrar clientes:', error);
                     alert('Falha ao aplicar o filtro. Verifique o console.');
                     setClientes([]);
                 });
-        }
     };
 
     const handleCadastroCliente = (novoCliente) => {
@@ -151,9 +156,15 @@ const ClientesPage = () => {
                 />
                 <button onClick={handleSearch}>Buscar</button>
                 
-                <select value={filtroAtivo} onChange={handleFiltroChange} className="filtro-select">
+                <select 
+                    value={filtroAtivo} 
+                    onChange={handleFiltroChange} 
+                    className="filtro-select"
+                    >
                     <option value="todos">Filtrar por...</option>
                     <option value="gastos_100">Clientes que gastaram {'>'} R$ 100</option>
+                    <option value="gastos_200">Clientes que gastaram {'>'} R$ 200</option>
+                    <option value="gastos_300">Clientes que gastaram {'>'} R$ 300</option>
                 </select>
             </div>
 
