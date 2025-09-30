@@ -1,3 +1,5 @@
+/* src/ClientesPage.css */
+
 .page-container {
   padding: 2rem;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -172,62 +174,4 @@ tbody tr:last-child td {
 .filtro-select:focus {
   outline: none;
   border-color: #007bff;
-}
-
-.barra-pesquisa {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  padding: 12px 16px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-.barra-pesquisa input[type="text"] {
-  flex: 1;
-  padding: 10px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.barra-pesquisa input[type="text"]:focus {
-  outline: none;
-  border-color: #337ab7;
-  box-shadow: 0 0 0 3px rgba(51, 122, 183, 0.2);
-}
-
-.barra-pesquisa button {
-  background-color: #337ab7;
-  color: white;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.barra-pesquisa button:hover {
-  background-color: #286090;
-}
-
-.filtro-select {
-  padding: 10px 14px;
-  font-size: 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  background-color: #f9fafb;
-  cursor: pointer;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.filtro-select:focus {
-  outline: none;
-  border-color: #337ab7;
-  box-shadow: 0 0 0 3px rgba(51, 122, 183, 0.2);
 }

@@ -51,6 +51,7 @@ const ClientesPage = () => {
 
     const handleFiltroChange = (event) => {
 <<<<<<< HEAD
+<<<<<<< HEAD
             const valorFiltro = event.target.value;
             setFiltroAtivo(valorFiltro); 
             setBusca("");
@@ -58,18 +59,14 @@ const ClientesPage = () => {
         const valorFiltro = event.target.value;
         setFiltroAtivo(valorFiltro);
 >>>>>>> a6223a802f1ea850ef4ec57db71387dafe5e05ab
+=======
+        const valorFiltro = event.target.value;
+        setFiltroAtivo(valorFiltro); 
+>>>>>>> parent of 37fc564 (front de evento e clientes)
 
-            if (valorFiltro === 'todos') {
-                fetchClientes(); 
-            } else if (valorFiltro === 'gastos_100') {
-                buscarPorGastoMinimo(100);
-            } else if (valorFiltro === 'gastos_200') {
-                buscarPorGastoMinimo(200);
-            } else if (valorFiltro === 'gastos_300') {
-                buscarPorGastoMinimo(300);
-            }
-        };
+        setBusca("");
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         const buscarPorGastoMinimo = (valor) => {
             fetch(`http://localhost:8080/clientes/gastos-acima-de?valor=${valor}`)
@@ -79,16 +76,25 @@ const ClientesPage = () => {
         } else if (valorFiltro === 'gastos_100') {
             fetch('http://localhost:8080/clientes/gastos-acima-de?valor=100')
 >>>>>>> a6223a802f1ea850ef4ec57db71387dafe5e05ab
+=======
+        if (valorFiltro === 'todos') {
+            fetchClientes(); 
+        } else if (valorFiltro === 'gastos_100') {
+            fetch('http://localhost:8080/clientes/gastos-acima-de?valor=100')
+>>>>>>> parent of 37fc564 (front de evento e clientes)
                 .then(response => {
                     if (!response.ok) throw new Error(`Erro HTTP! Status: ${response.status}`);
                     return response.json();
                 })
-                .then(data => setClientes(Array.isArray(data) ? data : []))
+                .then(data => {
+                    setClientes(Array.isArray(data) ? data : []);
+                })
                 .catch(error => {
                     console.error('Erro ao filtrar clientes:', error);
                     alert('Falha ao aplicar o filtro. Verifique o console.');
                     setClientes([]);
                 });
+        }
     };
 
     const handleCadastroCliente = (novoCliente) => {
@@ -171,6 +177,7 @@ const ClientesPage = () => {
                 <button onClick={handleSearch}>Buscar</button>
 <<<<<<< HEAD
                 
+<<<<<<< HEAD
                 <select 
                     value={filtroAtivo} 
                     onChange={handleFiltroChange} 
@@ -180,10 +187,11 @@ const ClientesPage = () => {
 
                 <select value={filtroAtivo} onChange={handleFiltroChange} className="filtro-select">
 >>>>>>> a6223a802f1ea850ef4ec57db71387dafe5e05ab
+=======
+                <select value={filtroAtivo} onChange={handleFiltroChange} className="filtro-select">
+>>>>>>> parent of 37fc564 (front de evento e clientes)
                     <option value="todos">Filtrar por...</option>
                     <option value="gastos_100">Clientes que gastaram {'>'} R$ 100</option>
-                    <option value="gastos_200">Clientes que gastaram {'>'} R$ 200</option>
-                    <option value="gastos_300">Clientes que gastaram {'>'} R$ 300</option>
                 </select>
             </div>
 

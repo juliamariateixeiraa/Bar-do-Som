@@ -3,7 +3,6 @@ import EditEventoModal from './EditEventoModal';
 import AddEventoModal from './AddEventoModal';
 import './ClientesPage.css';
 import './EditClienteModal.css';
-import './EventosPage.css'
 
 const EventosPage = () => {
     const [eventos, setEventos] = useState([]);
@@ -138,34 +137,24 @@ const EventosPage = () => {
                 </button>
             </div>
 
-            {/* parte do return() — substitua sua <div className="barra-pesquisa"> por isso */}
             <div className="barra-pesquisa">
-                <div className="filtro-wrapper">
-                    <label htmlFor="filtroPublico" className="filtro-label">Público:</label>
-                    <select
-                    id="filtroPublico"
-                    value={filtroPublico}
-                    onChange={handleFiltroChange}
-                    className="filtro-select"
-                    >
+                <select value={filtroPublico} onChange={handleFiltroChange} className="filtro-select">
                     <option value="todos">Filtrar por público...</option>
                     {opcoesPublico.map(opcao => (
                         <option key={opcao.publico_estimado} value={opcao.publico_estimado}>
-                        Público de {opcao.publico_estimado}
+                            Público de {opcao.publico_estimado}
                         </option>
                     ))}
-                    </select>
-                </div>
+                </select>
 
                 {melhorMes && (
                     <div className="info-box">
-                    <strong>🏆 Mês de Maior Potencial:</strong>
-                    <span className="info-mes">{melhorMes.mes}</span>
-                    <span className="info-valor">R$ {Number(melhorMes.renda_potencial_total).toFixed(2)}</span>
+                        <strong>🏆 Mês de Maior Potencial:</strong>
+                        <span className="info-mes">{melhorMes.mes}</span>
+                        <span className="info-valor">R$ {Number(melhorMes.renda_potencial_total).toFixed(2)}</span>
                     </div>
                 )}
             </div>
-
 
             <div className="lista-clientes">
                 <h2>Eventos Cadastrados</h2>
