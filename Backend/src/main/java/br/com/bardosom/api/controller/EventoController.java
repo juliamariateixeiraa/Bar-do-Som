@@ -39,7 +39,11 @@ public class EventoController {
     public List<Map<String, Object>> listarTodosEventos() {
         return eventoDAO.listarTodos();
     }
-    
+
+    @GetMapping("/detalhes-artisticos")
+    public List<Map<String, Object>> listarEventosComDetalhesArtisticos() {
+        return eventoDAO.listarEventosComArtistas();
+    }
     @GetMapping("/com-clientes")
     public List<Map<String, Object>> getEventosComClientes() {
         return eventoDAO.listarClientesEmEventos();

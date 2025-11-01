@@ -79,6 +79,11 @@ public class ClienteController {
         }
     }
 
+    @GetMapping("/inativos")
+    public List<Map<String, Object>> getClientesInativos() {
+        return clienteDAO.findClientesInativos();
+    }
+
     private static class ClienteRequest {
         private String nome;
         private String email;

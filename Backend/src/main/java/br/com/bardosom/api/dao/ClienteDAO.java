@@ -105,4 +105,15 @@ public class ClienteDAO {
 
         return jdbcTemplate.queryForList(sql, valorMinimo);
     }
+
+    public List<Map<String, Object>> findClientesInativos() {
+        String sql = "SELECT c.id_cliente, c.nome, c.email, c.telefone " +
+                "FROM clientes c " +
+                "LEFT JOIN pedidos p ON c.id_cliente = p.id_cliente " +
+                "WHERE p.id_pedido IS NULL";
+
+        // O queryForList irá mapear as colunas (id_cliente, nome, email, telefone)
+        // para uma lista de Maps (chave/valor) que o Spring Boot converte em JSON.
+        return jdbcTemplate.queryForList(sql);
+    }
 }

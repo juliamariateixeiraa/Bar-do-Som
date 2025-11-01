@@ -64,6 +64,11 @@ public class EventoDAO {
         return jdbcTemplate.queryForList(sql, publico);
     }
 
+    public List<Map<String, Object>> listarEventosComArtistas() {
+        String sql = "SELECT nome_evento, data_evento, hora_evento, valor_ingresso, nome_banda_artista, tipo_artista, estilo, funcao FROM VisaoEventosArtistas";
+        return jdbcTemplate.queryForList(sql);
+    }
+
     public Map<String, Object> encontrarMesComMaiorPotencial() {
         String sql = "SELECT " +
                 "    CASE MONTH(MAX(data)) " +
