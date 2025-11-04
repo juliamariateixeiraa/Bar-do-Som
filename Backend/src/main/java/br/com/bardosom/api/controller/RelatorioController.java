@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.LinkedHashMap; // <-- IMPORTANTE: Adicione este import
 import java.util.List;
 import java.util.Map;
 
@@ -40,12 +39,18 @@ public class RelatorioController {
     }
 
     // ===================================================================
-    // === NOVO ENDPOINT PARA O GRÁFICO ===
+    // === ENDPOINT DO GRÁFICO DE VENDAS (JÁ EXISTE) ===
     // ===================================================================
     @GetMapping("/vendas-mensais")
     public Map<String, Double> getVendasMensais() {
-
-        // Apagamos os dados falsos e agora
-        // chamamos diretamente o DAO, que busca no banco de dados!
         return relatorioDAO.getVendasMensais();
-    }}
+    }
+
+    // ===================================================================
+    // === NOVO ENDPOINT PARA O GRÁFICO DE CLIENTES ===
+    // ===================================================================
+    @GetMapping("/pedidos-por-mes")
+    public Map<String, Long> getPedidosPorMes() {
+        return relatorioDAO.getPedidosPorMes();
+    }
+}
