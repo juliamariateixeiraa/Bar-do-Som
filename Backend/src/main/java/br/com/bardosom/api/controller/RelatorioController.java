@@ -7,11 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedHashMap; // <-- IMPORTANTE: Adicione este import
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/relatorios") 
+@RequestMapping("/relatorios")
 @CrossOrigin(origins = "http://localhost:5173")
 public class RelatorioController {
 
@@ -37,4 +38,14 @@ public class RelatorioController {
     public List<Map<String, Object>> getClientesReservas() {
         return relatorioDAO.listarClientesReservasFullJoin();
     }
-}
+
+    // ===================================================================
+    // === NOVO ENDPOINT PARA O GRÁFICO ===
+    // ===================================================================
+    @GetMapping("/vendas-mensais")
+    public Map<String, Double> getVendasMensais() {
+
+        // Apagamos os dados falsos e agora
+        // chamamos diretamente o DAO, que busca no banco de dados!
+        return relatorioDAO.getVendasMensais();
+    }}
