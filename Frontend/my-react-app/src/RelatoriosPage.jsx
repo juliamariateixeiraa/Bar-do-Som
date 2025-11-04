@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react';
-// 1. Importa os componentes de gráfico
-import { Bar } from 'react-chartjs-2';
+// 1. Importa os componentes de gráfico (Barra e Linha)
+import { Bar, Line } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
     CategoryScale,
     LinearScale,
-    BarElement,
+    BarElement,    // Para gráfico de Barras
+    LineElement,   // Para gráfico de Linha
+    PointElement,  // Para gráfico de Linha
     Title,
     Tooltip,
     Legend,
 } from 'chart.js';
 
-// 2. Registra os componentes necessários do Chart.js
+// 2. Registra todos os componentes necessários
 ChartJS.register(
     CategoryScale,
     LinearScale,
     BarElement,
+    LineElement,
+    PointElement,
     Title,
     Tooltip,
     Legend
@@ -26,15 +30,26 @@ const styles = {
     pageContainer: {
         padding: '20px',
     },
-    chartContainer: {
-        width: '80%',
-        maxWidth: '900px',
-        height: '450px',
-        margin: '40px auto', // Centraliza o gráfico
+    // NOVO: Container para colocar os gráficos lado a lado
+    chartsRow: {
+        display: 'flex',
+        flexWrap: 'wrap', // Permite quebrar em telas menores
+        gap: '20px',
+        justifyContent: 'center',
+        marginBottom: '40px',
+    },
+    // NOVO: Caixa individual para cada gráfico
+    chartBox: {
+        width: '100%',
+        maxWidth: '600px', // Tamanho máximo de cada gráfico
+        minHeight: '400px',
         padding: '20px',
         border: '1px solid #ddd',
         borderRadius: '8px',
         boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
     },
     tablesContainer: {
         marginTop: '50px',
@@ -60,76 +75,76 @@ function RelatoriosPage() {
 
     // --- ESTADOS PARA OS DADOS ---
 
-    // Estado para o gráfico dinâmico
-    const [chartData, setChartData] = useState({
-        labels: [],
-        datasets: [],
-    });
-    const [loadingChart, setLoadingChart] = useState(true);
+    // Gráfico 1: Vendas Mensais (Barras)
+    const [vendasChartData, setVendasChartData] = useState({ labels: [], datasets: [] });
+    const [loadingVendasChart, setLoadingVendasChart] = useState(true);
 
-    // Estados para as tabelas (dos seus endpoints antigos)
+    // Gráfico 2: Movimento de Clientes (Linha)
+    const [movimentoChartData, setMovimentoChartData] = useState({ labels: [], datasets: [] });
+    const [loadingMovimentoChart, setLoadingMovimentoChart] = useState(true);
+
+    // Tabelas
     const [detalhesVendas, setDetalhesVendas] = useState([]);
     const [maiorPedido, setMaiorPedido] = useState([]);
 
     // --- BUSCA DE DADOS (useEffect) ---
-
     useEffect(() => {
-        // 1. Busca dados para o GRÁFICO
+        // 1. Busca dados para o GRÁFICO DE VENDAS (Barras)
         fetch('http://localhost:8080/relatorios/vendas-mensais')
             .then(response => response.json())
             .then(dadosDoBackend => {
-                // 'dadosDoBackend' é { "Janeiro": 1200.50, ... }
-                const labels = Object.keys(dadosDoBackend); // Pega os meses
-                const data = Object.values(dadosDoBackend); // Pega os valores
-
-                setChartData({
+                const labels = Object.keys(dadosDoBackend);
+                const data = Object.values(dadosDoBackend);
+                setVendasChartData({
                     labels: labels,
-                    datasets: [
-                        {
-                            label: 'Vendas Mensais (R$)',
-                            data: data,
-                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1,
-                        },
-                    ],
+                    datasets: [{
+                        label: 'Vendas Mensais (R$)',
+                        data: data,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                    }],
                 });
-                setLoadingChart(false);
+                setLoadingVendasChart(false);
             })
-            .catch(error => {
-                console.error('Erro ao buscar dados do gráfico:', error);
-                setLoadingChart(false);
-            });
+            .catch(error => setLoadingVendasChart(false));
 
-        // 2. Busca dados para a TABELA 1
+        // 2. Busca dados para o GRÁFICO DE MOVIMENTO (Linha)
+        fetch('http://localhost:8080/relatorios/pedidos-por-mes')
+            .then(response => response.json())
+            .then(dadosDoBackend => {
+                const labels = Object.keys(dadosDoBackend);
+                const data = Object.values(dadosDoBackend);
+                setMovimentoChartData({
+                    labels: labels,
+                    datasets: [{
+                        label: 'Número de Pedidos (Movimento)',
+                        data: data,
+                        fill: false,
+                        borderColor: 'rgba(255, 99, 132, 0.8)', // Cor diferente
+                        backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                        tension: 0.1
+                    }],
+                });
+                setLoadingMovimentoChart(false);
+            })
+            .catch(error => setLoadingMovimentoChart(false));
+
+        // 3. Busca dados para as TABELAS
         fetch('http://localhost:8080/relatorios/detalhes-vendas')
-            .then(res => res.json())
-            .then(data => setDetalhesVendas(data))
-            .catch(error => console.error('Erro ao buscar detalhes vendas:', error));
-
-        // 3. Busca dados para a TABELA 2
+            .then(res => res.json()).then(data => setDetalhesVendas(data));
         fetch('http://localhost:8080/relatorios/maior-pedido')
-            .then(res => res.json())
-            .then(data => setMaiorPedido(data))
-            .catch(error => console.error('Erro ao buscar maior pedido:', error));
+            .then(res => res.json()).then(data => setMaiorPedido(data));
 
     }, []); // O array vazio [] faz isso rodar só uma vez
 
-    // --- OPÇÕES DO GRÁFICO ---
-    const chartOptions = {
+    // --- OPÇÕES DOS GRÁFICOS ---
+    const options = {
         responsive: true,
-        maintainAspectRatio: false, // Permite o gráfico preencher o container
+        maintainAspectRatio: false,
         plugins: {
-            legend: {
-                position: 'top',
-            },
-            title: {
-                display: true,
-                text: 'Desempenho de Vendas Mensais',
-                font: {
-                    size: 18,
-                }
-            },
+            legend: { position: 'top' },
+            title: { display: true, font: { size: 18 } }
         },
     };
 
@@ -138,18 +153,34 @@ function RelatoriosPage() {
         <div style={styles.pageContainer}>
             <h1>Dashboard de Relatórios</h1>
 
-            {/* --- Seção do Gráfico Dinâmico --- */}
-            <div style={styles.chartContainer}>
-                {loadingChart ? (
-                    <p>Carregando gráfico...</p>
-                ) : (
-                    <Bar options={chartOptions} data={chartData} />
-                )}
+            {/* --- Seção dos Gráficos Dinâmicos --- */}
+            <div style={styles.chartsRow}>
+
+                {/* Gráfico 1: Vendas */}
+                <div style={styles.chartBox}>
+                    {loadingVendasChart ? <p>Carregando gráfico de vendas...</p> : (
+                        <Bar
+                            options={{ ...options, plugins: { ...options.plugins, title: { ...options.plugins.title, text: 'Desempenho de Vendas (R$)' } } }}
+                            data={vendasChartData}
+                        />
+                    )}
+                </div>
+
+                {/* Gráfico 2: Movimento */}
+                <div style={styles.chartBox}>
+                    {loadingMovimentoChart ? <p>Carregando gráfico de movimento...</p> : (
+                        <Line
+                            options={{ ...options, plugins: { ...options.plugins, title: { ...options.plugins.title, text: 'Movimento de Clientes (Nº de Pedidos)' } } }}
+                            data={movimentoChartData}
+                        />
+                    )}
+                </div>
             </div>
 
             {/* --- Seção das Tabelas (mantendo seus relatórios antigos) --- */}
             <div style={styles.tablesContainer}>
                 <h2>Relatórios Detalhados</h2>
+                {/* ... (O código das suas tabelas de Detalhes de Vendas e Maior Pedido) ... */}
 
                 <h3>Detalhes de Vendas</h3>
                 <table style={styles.table}>
@@ -190,6 +221,7 @@ function RelatoriosPage() {
                     ))}
                     </tbody>
                 </table>
+
             </div>
         </div>
     );
