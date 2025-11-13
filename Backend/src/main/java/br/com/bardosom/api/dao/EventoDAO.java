@@ -1,11 +1,11 @@
 package br.com.bardosom.api.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Map;
 
 @Repository
 public class EventoDAO {
@@ -99,5 +99,10 @@ public class EventoDAO {
             return null;
         }
         return resultados.get(0);
+    }
+    
+    public void ajustarPublicoEstimado() {
+        String sql = "CALL AjustarPublicoEstimadoEventos()";
+        jdbcTemplate.update(sql);
     }
 }

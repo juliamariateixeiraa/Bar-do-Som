@@ -1,11 +1,11 @@
 package br.com.bardosom.api.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Map;
 
 @Repository
 public class ClienteDAO {
@@ -114,6 +114,21 @@ public class ClienteDAO {
 
         // O queryForList irá mapear as colunas (id_cliente, nome, email, telefone)
         // para uma lista de Maps (chave/valor) que o Spring Boot converte em JSON.
+        return jdbcTemplate.queryForList(sql);
+    }
+
+// para a funcao 1 da entrega 05
+    public List<Map<String, Object>> listarClientesComIdade() {
+        String sql = "SELECT " +
+            "    c.id_cliente, " +
+            "    c.nome, " +
+            "    c.email, " +
+            "    c.data_nascimento, " +
+            "    CalcularIdadeCliente(c.data_nascimento) AS idade " + // Usando a Função SQL
+            "FROM " +
+            "    clientes c " +
+            "ORDER BY " +
+            "    c.nome";
         return jdbcTemplate.queryForList(sql);
     }
 }
