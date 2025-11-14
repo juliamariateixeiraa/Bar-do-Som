@@ -13,7 +13,6 @@ public class ClienteDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    // Método não utilizado, mas corrigido por segurança.
     public List<Map<String, Object>> listarTodos() {
         String sql = "SELECT id_cliente, nome, email, data_nascimento, telefone FROM clientes";
         return jdbcTemplate.queryForList(sql);
@@ -21,7 +20,7 @@ public class ClienteDAO {
 
     public List<Map<String, Object>> listarClientesComDadosDePedidos() {
         String sql = "SELECT " +
-                "    c.id_cliente, " + // CORRIGIDO: id -> id_cliente
+                "    c.id_cliente, " +
                 "    c.nome, " +
                 "    c.email, " +
                 "    c.telefone, " +
@@ -32,9 +31,9 @@ public class ClienteDAO {
                 "FROM " +
                 "    clientes c " +
                 "LEFT JOIN " +
-                "    pedidos p ON c.id_cliente = p.id_cliente " + // CORRIGIDO: pedido -> pedidos e c.id -> c.id_cliente
+                "    pedidos p ON c.id_cliente = p.id_cliente " +
                 "GROUP BY " +
-                "    c.id_cliente, c.nome, c.email, c.telefone, c.data_nascimento " + // CORRIGIDO: id -> id_cliente
+                "    c.id_cliente, c.nome, c.email, c.telefone, c.data_nascimento " +
                 "ORDER BY " +
                 "    c.nome";
         return jdbcTemplate.queryForList(sql);
@@ -45,21 +44,19 @@ public class ClienteDAO {
         jdbcTemplate.update(sql, nome, email, dataNascimento, telefone);
     }
 
-    // No frontend, lembre-se de que a propriedade agora é 'id_cliente'
     public void atualizarCliente(int id, String nome, String email, String dataNascimento, String telefone) {
-        String sql = "UPDATE clientes SET nome = ?, email = ?, data_nascimento = ?, telefone = ? WHERE id_cliente = ?"; // CORRIGIDO: id -> id_cliente
+        String sql = "UPDATE clientes SET nome = ?, email = ?, data_nascimento = ?, telefone = ? WHERE id_cliente = ?";
         jdbcTemplate.update(sql, nome, email, dataNascimento, telefone, id);
     }
 
-    // No frontend, lembre-se de que a propriedade agora é 'id_cliente'
     public void deletarCliente(int id) {
-        String sql = "DELETE FROM clientes WHERE id_cliente = ?"; // CORRIGIDO: id -> id_cliente
+        String sql = "DELETE FROM clientes WHERE id_cliente = ?";
         jdbcTemplate.update(sql, id);
     }
 
     public List<Map<String, Object>> buscarPorNome(String nome) {
         String sql = "SELECT " +
-                "    c.id_cliente, " + // CORRIGIDO: id -> id_cliente
+                "    c.id_cliente, " +
                 "    c.nome, " +
                 "    c.email, " +
                 "    c.telefone, " +
@@ -70,11 +67,11 @@ public class ClienteDAO {
                 "FROM " +
                 "    clientes c " +
                 "LEFT JOIN " +
-                "    pedidos p ON c.id_cliente = p.id_cliente " + // CORRIGIDO: pedido -> pedidos e c.id -> c.id_cliente
+                "    pedidos p ON c.id_cliente = p.id_cliente " +
                 "WHERE " +
                 "    c.nome LIKE ? " +
                 "GROUP BY " +
-                "    c.id_cliente, c.nome, c.email, c.telefone, c.data_nascimento " + // CORRIGIDO: id -> id_cliente
+                "    c.id_cliente, c.nome, c.email, c.telefone, c.data_nascimento " +
                 "ORDER BY " +
                 "    c.nome";
 
@@ -84,7 +81,7 @@ public class ClienteDAO {
 
     public List<Map<String, Object>> listarClientesQueGastaramAcimaDe(double valorMinimo) {
         String sql = "SELECT " +
-                "    c.id_cliente, " + // CORRIGIDO: id -> id_cliente
+                "    c.id_cliente, " +
                 "    c.nome, " +
                 "    c.email, " +
                 "    c.telefone, " +
@@ -95,9 +92,9 @@ public class ClienteDAO {
                 "FROM " +
                 "    clientes c " +
                 "LEFT JOIN " +
-                "    pedidos p ON c.id_cliente = p.id_cliente " + // CORRIGIDO: pedido -> pedidos e c.id -> c.id_cliente
+                "    pedidos p ON c.id_cliente = p.id_cliente " +
                 "GROUP BY " +
-                "    c.id_cliente, c.nome, c.email, c.telefone, c.data_nascimento " + // CORRIGIDO: id -> id_cliente
+                "    c.id_cliente, c.nome, c.email, c.telefone, c.data_nascimento " +
                 "HAVING " +
                 "    SUM(CASE WHEN p.status = 'concluído' THEN p.total ELSE 0 END) > ? " +
                 "ORDER BY " +
@@ -111,24 +108,51 @@ public class ClienteDAO {
                 "FROM clientes c " +
                 "LEFT JOIN pedidos p ON c.id_cliente = p.id_cliente " +
                 "WHERE p.id_pedido IS NULL";
-
-        // O queryForList irá mapear as colunas (id_cliente, nome, email, telefone)
-        // para uma lista de Maps (chave/valor) que o Spring Boot converte em JSON.
         return jdbcTemplate.queryForList(sql);
     }
 
-// para a funcao 1 da entrega 05
     public List<Map<String, Object>> listarClientesComIdade() {
         String sql = "SELECT " +
-            "    c.id_cliente, " +
-            "    c.nome, " +
-            "    c.email, " +
-            "    c.data_nascimento, " +
-            "    CalcularIdadeCliente(c.data_nascimento) AS idade " + // Usando a Função SQL
-            "FROM " +
-            "    clientes c " +
-            "ORDER BY " +
-            "    c.nome";
+                "    c.id_cliente, " +
+                "    c.nome, " +
+                "    c.email, " +
+                "    c.data_nascimento, " +
+                "    CalcularIdadeCliente(c.data_nascimento) AS idade " +
+                "FROM " +
+                "    clientes c " +
+                "ORDER BY " +
+                "    c.nome";
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    public List<Map<String, Object>> contarClientesPorMesNascimento() {
+        String sql = "SELECT " +
+                "    mes_numero, " +
+                "    CASE mes_numero " +
+                "        WHEN 1 THEN 'Janeiro' " +
+                "        WHEN 2 THEN 'Fevereiro' " +
+                "        WHEN 3 THEN 'Março' " +
+                "        WHEN 4 THEN 'Abril' " +
+                "        WHEN 5 THEN 'Maio' " +
+                "        WHEN 6 THEN 'Junho' " +
+                "        WHEN 7 THEN 'Julho' " +
+                "        WHEN 8 THEN 'Agosto' " +
+                "        WHEN 9 THEN 'Setembro' " +
+                "        WHEN 10 THEN 'Outubro' " +
+                "        WHEN 11 THEN 'Novembro' " +
+                "        WHEN 12 THEN 'Dezembro' " +
+                "    END AS mes_nome, " +
+                "    quantidade_clientes, " +
+                "    nomes_clientes " +
+                "FROM (" +
+                "    SELECT " +
+                "        MONTH(data_nascimento) AS mes_numero, " +
+                "        COUNT(*) AS quantidade_clientes, " +
+                "        GROUP_CONCAT(nome ORDER BY nome SEPARATOR ', ') AS nomes_clientes " +
+                "    FROM clientes " +
+                "    GROUP BY MONTH(data_nascimento)" +
+                ") AS subquery " +
+                "ORDER BY mes_numero";
         return jdbcTemplate.queryForList(sql);
     }
 }

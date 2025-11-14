@@ -32,6 +32,11 @@ public class ClienteController {
         return clienteDAO.listarClientesComDadosDePedidos();
     }
 
+    @GetMapping("/por-mes-nascimento")
+    public List<Map<String, Object>> getClientesPorMesNascimento() {
+        return clienteDAO.contarClientesPorMesNascimento();
+    }
+
     @PostMapping("/cadastrar")
     public ResponseEntity<String> cadastrarCliente(@RequestBody ClienteRequest clienteRequest) {
         try {
