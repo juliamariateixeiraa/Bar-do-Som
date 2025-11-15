@@ -162,6 +162,36 @@ INSERT INTO `funcionarios` VALUES (1,'Roberto Souza','Gerente','11977776666',NUL
 UNLOCK TABLES;
 
 --
+-- Table structure for table `logs_auditoria`
+--
+
+DROP TABLE IF EXISTS `logs_auditoria`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+ SET character_set_client = utf8mb4 ;
+CREATE TABLE `logs_auditoria` (
+  `id_log` int NOT NULL AUTO_INCREMENT,
+  `acao` varchar(50) NOT NULL COMMENT 'Tipo de ação: INSERT, UPDATE, DELETE, etc.',
+  `tabela` varchar(100) NOT NULL COMMENT 'Tabela afetada pela ação',
+  `usuario` varchar(100) DEFAULT NULL COMMENT 'Usuário que executou a ação',
+  `detalhes` text COMMENT 'Descrição detalhada da operação',
+  `data_hora` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'Data e hora da operação',
+  PRIMARY KEY (`id_log`),
+  KEY `idx_data_hora` (`data_hora`),
+  KEY `idx_tabela` (`tabela`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabela de auditoria para rastreamento de operações';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logs_auditoria`
+--
+
+LOCK TABLES `logs_auditoria` WRITE;
+/*!40000 ALTER TABLE `logs_auditoria` DISABLE KEYS */;
+INSERT INTO `logs_auditoria` VALUES (1,'UPDATE','produtos','root@localhost','Produto \"Cerveja Pilsen 600ml\" (ID: 1) atualizado. Estoque: 50 → 75 unidades','2025-11-15 01:24:37'),(2,'UPDATE','produtos','root@localhost','Estoque do produto \"Cerveja Pilsen 600ml\" (ID: 1) atualizado para 75 unidades','2025-11-15 01:24:37'),(3,'PROCESSAMENTO_LOTE','pedidos','root@localhost','Iniciando processamento em lote de pedidos','2025-11-15 01:24:37'),(4,'PROCESSAMENTO_LOTE','pedidos','root@localhost','Processamento concluído: 0 pedidos processados','2025-11-15 01:24:37');
+/*!40000 ALTER TABLE `logs_auditoria` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `mesas`
 --
 
@@ -231,7 +261,7 @@ CREATE TABLE `pedido_produto` (
   `id_produto` int NOT NULL,
   `quantidade` int DEFAULT '1',
   PRIMARY KEY (`id_pedido`,`id_produto`),
-  KEY `id_produto` (`id_produto`),
+  KEY `idx_pedido_produto_lookup` (`id_produto`,`id_pedido`),
   CONSTRAINT `pedido_produto_ibfk_1` FOREIGN KEY (`id_pedido`) REFERENCES `pedidos` (`id_pedido`) ON DELETE CASCADE,
   CONSTRAINT `pedido_produto_ibfk_2` FOREIGN KEY (`id_produto`) REFERENCES `produtos` (`id_produto`),
   CONSTRAINT `pedido_produto_chk_1` CHECK ((`quantidade` > 0))
@@ -263,9 +293,9 @@ CREATE TABLE `pedidos` (
   `id_cliente` int DEFAULT NULL,
   `id_mesa` int DEFAULT NULL,
   PRIMARY KEY (`id_pedido`),
-  KEY `id_cliente` (`id_cliente`),
   KEY `id_mesa` (`id_mesa`),
   KEY `idx_pedidos_data_hora` (`data_hora`),
+  KEY `idx_pedidos_cliente` (`id_cliente`,`data_hora` DESC),
   CONSTRAINT `pedidos_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_cliente`),
   CONSTRAINT `pedidos_ibfk_2` FOREIGN KEY (`id_mesa`) REFERENCES `mesas` (`id_mesa`) ON UPDATE CASCADE,
   CONSTRAINT `pedidos_chk_1` CHECK ((`total` >= 0))
@@ -308,7 +338,7 @@ CREATE TABLE `produtos` (
 
 LOCK TABLES `produtos` WRITE;
 /*!40000 ALTER TABLE `produtos` DISABLE KEYS */;
-INSERT INTO `produtos` VALUES (1,'Cerveja Pilsen 600ml','Bebida',12.00,50),(2,'Caipirinha de Limão','Bebida',18.00,30),(3,'Batata Frita','Comida',25.00,20),(4,'Cerveja IPA 500ml','Bebida',15.50,45),(5,'Refrigerante Lata','Bebida',6.00,80),(6,'Água Mineral','Bebida',5.00,100),(7,'Porção de Calabresa Acebolada','Comida',35.00,15),(8,'Suco Natural de Laranja','Bebida',10.00,25),(9,'Whisky Dose','Bebida',20.00,60),(10,'Martini','Bebida',22.00,20),(11,'Mandioca Frita','Comida',28.00,18),(12,'Cerveja Malzbier 350ml','Bebida',10.00,40),(13,'Gin Tônica','Bebida',25.00,35),(14,'Porção de Frango à Passarinho','Comida',40.00,12),(15,'Água de Coco','Bebida',8.00,50),(16,'Chopp Claro','Bebida',9.50,90),(17,'Tábua de Frios','Comida',55.00,10),(18,'Cuba Libre','Bebida',20.00,25),(19,'Cerveja Escura 600ml','Bebida',13.00,30),(20,'Mojito','Bebida',24.00,28),(21,'Pastel de Carne','Comida',15.00,50),(22,'Refrigerante Zero Lata','Bebida',6.00,70),(23,'Salada de Frutas','Comida',18.00,15),(24,'Tequila Shot','Bebida',16.00,50),(25,'Feijoada (Sexta-feira)','Comida',60.00,5),(26,'Porção de Camarão Frito','Comida',75.00,8),(27,'Caipirinha de Morango','Bebida',20.00,30),(28,'Cerveja Sem Álcool','Bebida',11.00,20),(29,'Milkshake de Chocolate','Bebida',25.00,15),(30,'Caldo de Feijão','Comida',18.00,25),(31,'Gin com Especiarias','Bebida',30.00,18),(32,'Porção de Bolinho de Queijo','Comida',32.00,22),(33,'Espumante Garrafa','Bebida',80.00,5),(34,'Vinho Tinto Taça','Bebida',25.00,10),(35,'Filé com Fritas','Comida',65.00,10),(36,'Chocolate Quente','Bebida',12.00,20),(37,'Torta Holandesa','Comida',16.00,15),(38,'Porção de Iscas de Peixe','Comida',48.00,13),(39,'Espresso','Bebida',6.00,40),(40,'Pudim de Leite Condensado','Comida',14.00,10),(41,'Cerveja Pilsen 600ml','Bebida',12.00,50),(42,'Caipirinha de Limão','Bebida',18.00,30),(43,'Batata Frita','Comida',25.00,20),(44,'Cerveja IPA 500ml','Bebida',15.50,45),(45,'Refrigerante Lata','Bebida',6.00,80),(46,'Água Mineral','Bebida',5.00,100),(47,'Porção de Calabresa Acebolada','Comida',35.00,15),(48,'Suco Natural de Laranja','Bebida',10.00,25),(49,'Whisky Dose','Bebida',20.00,60),(50,'Martini','Bebida',22.00,20),(51,'Mandioca Frita','Comida',28.00,18),(52,'Cerveja Malzbier 350ml','Bebida',10.00,40),(53,'Gin Tônica','Bebida',25.00,35),(54,'Porção de Frango à Passarinho','Comida',40.00,12),(55,'Água de Coco','Bebida',8.00,50),(56,'Chopp Claro','Bebida',9.50,90),(57,'Tábua de Frios','Comida',55.00,10),(58,'Cuba Libre','Bebida',20.00,25),(59,'Cerveja Escura 600ml','Bebida',13.00,30),(60,'Mojito','Bebida',24.00,28),(61,'Pastel de Carne','Comida',15.00,50),(62,'Refrigerante Zero Lata','Bebida',6.00,70),(63,'Salada de Frutas','Comida',18.00,15),(64,'Tequila Shot','Bebida',16.00,50),(65,'Feijoada (Sexta-feira)','Comida',60.00,5),(66,'Porção de Camarão Frito','Comida',75.00,8),(67,'Caipirinha de Morango','Bebida',20.00,30),(68,'Cerveja Sem Álcool','Bebida',11.00,20),(69,'Milkshake de Chocolate','Bebida',25.00,15),(70,'Caldo de Feijão','Comida',18.00,25),(71,'Gin com Especiarias','Bebida',30.00,18),(72,'Porção de Bolinho de Queijo','Comida',32.00,22),(73,'Espumante Garrafa','Bebida',80.00,5),(74,'Vinho Tinto Taça','Bebida',25.00,10),(75,'Filé com Fritas','Comida',65.00,10),(76,'Chocolate Quente','Bebida',12.00,20),(77,'Torta Holandesa','Comida',16.00,15),(78,'Porção de Iscas de Peixe','Comida',48.00,13),(79,'Espresso','Bebida',6.00,40),(80,'Pudim de Leite Condensado','Comida',14.00,10);
+INSERT INTO `produtos` VALUES (1,'Cerveja Pilsen 600ml','Bebida',12.00,75),(2,'Caipirinha de Limão','Bebida',18.00,30),(3,'Batata Frita','Comida',25.00,20),(4,'Cerveja IPA 500ml','Bebida',15.50,45),(5,'Refrigerante Lata','Bebida',6.00,80),(6,'Água Mineral','Bebida',5.00,100),(7,'Porção de Calabresa Acebolada','Comida',35.00,15),(8,'Suco Natural de Laranja','Bebida',10.00,25),(9,'Whisky Dose','Bebida',20.00,60),(10,'Martini','Bebida',22.00,20),(11,'Mandioca Frita','Comida',28.00,18),(12,'Cerveja Malzbier 350ml','Bebida',10.00,40),(13,'Gin Tônica','Bebida',25.00,35),(14,'Porção de Frango à Passarinho','Comida',40.00,12),(15,'Água de Coco','Bebida',8.00,50),(16,'Chopp Claro','Bebida',9.50,90),(17,'Tábua de Frios','Comida',55.00,10),(18,'Cuba Libre','Bebida',20.00,25),(19,'Cerveja Escura 600ml','Bebida',13.00,30),(20,'Mojito','Bebida',24.00,28),(21,'Pastel de Carne','Comida',15.00,50),(22,'Refrigerante Zero Lata','Bebida',6.00,70),(23,'Salada de Frutas','Comida',18.00,15),(24,'Tequila Shot','Bebida',16.00,50),(25,'Feijoada (Sexta-feira)','Comida',60.00,5),(26,'Porção de Camarão Frito','Comida',75.00,8),(27,'Caipirinha de Morango','Bebida',20.00,30),(28,'Cerveja Sem Álcool','Bebida',11.00,20),(29,'Milkshake de Chocolate','Bebida',25.00,15),(30,'Caldo de Feijão','Comida',18.00,25),(31,'Gin com Especiarias','Bebida',30.00,18),(32,'Porção de Bolinho de Queijo','Comida',32.00,22),(33,'Espumante Garrafa','Bebida',80.00,5),(34,'Vinho Tinto Taça','Bebida',25.00,10),(35,'Filé com Fritas','Comida',65.00,10),(36,'Chocolate Quente','Bebida',12.00,20),(37,'Torta Holandesa','Comida',16.00,15),(38,'Porção de Iscas de Peixe','Comida',48.00,13),(39,'Espresso','Bebida',6.00,40),(40,'Pudim de Leite Condensado','Comida',14.00,10),(41,'Cerveja Pilsen 600ml','Bebida',12.00,50),(42,'Caipirinha de Limão','Bebida',18.00,30),(43,'Batata Frita','Comida',25.00,20),(44,'Cerveja IPA 500ml','Bebida',15.50,45),(45,'Refrigerante Lata','Bebida',6.00,80),(46,'Água Mineral','Bebida',5.00,100),(47,'Porção de Calabresa Acebolada','Comida',35.00,15),(48,'Suco Natural de Laranja','Bebida',10.00,25),(49,'Whisky Dose','Bebida',20.00,60),(50,'Martini','Bebida',22.00,20),(51,'Mandioca Frita','Comida',28.00,18),(52,'Cerveja Malzbier 350ml','Bebida',10.00,40),(53,'Gin Tônica','Bebida',25.00,35),(54,'Porção de Frango à Passarinho','Comida',40.00,12),(55,'Água de Coco','Bebida',8.00,50),(56,'Chopp Claro','Bebida',9.50,90),(57,'Tábua de Frios','Comida',55.00,10),(58,'Cuba Libre','Bebida',20.00,25),(59,'Cerveja Escura 600ml','Bebida',13.00,30),(60,'Mojito','Bebida',24.00,28),(61,'Pastel de Carne','Comida',15.00,50),(62,'Refrigerante Zero Lata','Bebida',6.00,70),(63,'Salada de Frutas','Comida',18.00,15),(64,'Tequila Shot','Bebida',16.00,50),(65,'Feijoada (Sexta-feira)','Comida',60.00,5),(66,'Porção de Camarão Frito','Comida',75.00,8),(67,'Caipirinha de Morango','Bebida',20.00,30),(68,'Cerveja Sem Álcool','Bebida',11.00,20),(69,'Milkshake de Chocolate','Bebida',25.00,15),(70,'Caldo de Feijão','Comida',18.00,25),(71,'Gin com Especiarias','Bebida',30.00,18),(72,'Porção de Bolinho de Queijo','Comida',32.00,22),(73,'Espumante Garrafa','Bebida',80.00,5),(74,'Vinho Tinto Taça','Bebida',25.00,10),(75,'Filé com Fritas','Comida',65.00,10),(76,'Chocolate Quente','Bebida',12.00,20),(77,'Torta Holandesa','Comida',16.00,15),(78,'Porção de Iscas de Peixe','Comida',48.00,13),(79,'Espresso','Bebida',6.00,40),(80,'Pudim de Leite Condensado','Comida',14.00,10);
 /*!40000 ALTER TABLE `produtos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -428,4 +458,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-14 21:16:57
+-- Dump completed on 2025-11-15  1:29:33
