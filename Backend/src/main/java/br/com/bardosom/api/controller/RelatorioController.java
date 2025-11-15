@@ -11,12 +11,14 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/relatorios") 
+@RequestMapping("/relatorios")
 @CrossOrigin(origins = "http://localhost:5173")
 public class RelatorioController {
 
     @Autowired
     private RelatorioDAO relatorioDAO;
+
+    // ========== ENDPOINTS ORIGINAIS ==========
 
     @GetMapping("/detalhes-vendas")
     public List<Map<String, Object>> getDetalhesVendas() {
@@ -36,5 +38,22 @@ public class RelatorioController {
     @GetMapping("/clientes-reservas")
     public List<Map<String, Object>> getClientesReservas() {
         return relatorioDAO.listarClientesReservasFullJoin();
+    }
+
+    // ========== NOVOS ENDPOINTS PARA OS GRÁFICOS ==========
+
+    @GetMapping("/vendas-por-tipo")
+    public List<Map<String, Object>> getVendasPorTipoProduto() {
+        return relatorioDAO.obterDistribuicaoPorTipoProduto();
+    }
+
+    @GetMapping("/eventos-por-estilo")
+    public List<Map<String, Object>> getEventosPorEstilo() {
+        return relatorioDAO.obterEventosPorEstilo();
+    }
+
+    @GetMapping("/clientes-faixa-etaria")
+    public List<Map<String, Object>> getClientesPorFaixaEtaria() {
+        return relatorioDAO.obterClientesPorFaixaEtaria();
     }
 }
