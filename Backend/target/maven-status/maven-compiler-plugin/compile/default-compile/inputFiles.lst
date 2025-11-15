@@ -1,12 +1,14 @@
 C:\Users\fabic\OneDrive\Área de Trabalho\bardosomm\Backend\src\main\java\br\com\bardosom\api\ApiApplication.java
 C:\Users\fabic\OneDrive\Área de Trabalho\bardosomm\Backend\src\main\java\br\com\bardosom\api\config\CorsConfig.java
 C:\Users\fabic\OneDrive\Área de Trabalho\bardosomm\Backend\src\main\java\br\com\bardosom\api\controller\ClienteController.java
+C:\Users\fabic\OneDrive\Área de Trabalho\bardosomm\Backend\src\main\java\br\com\bardosom\api\controller\DashboardController.java
 C:\Users\fabic\OneDrive\Área de Trabalho\bardosomm\Backend\src\main\java\br\com\bardosom\api\controller\EventoController.java
 C:\Users\fabic\OneDrive\Área de Trabalho\bardosomm\Backend\src\main\java\br\com\bardosom\api\controller\MesaController.java
 C:\Users\fabic\OneDrive\Área de Trabalho\bardosomm\Backend\src\main\java\br\com\bardosom\api\controller\PedidoController.java
 C:\Users\fabic\OneDrive\Área de Trabalho\bardosomm\Backend\src\main\java\br\com\bardosom\api\controller\ProdutoController.java
 C:\Users\fabic\OneDrive\Área de Trabalho\bardosomm\Backend\src\main\java\br\com\bardosom\api\controller\RelatorioController.java
 C:\Users\fabic\OneDrive\Área de Trabalho\bardosomm\Backend\src\main\java\br\com\bardosom\api\dao\ClienteDAO.java
+C:\Users\fabic\OneDrive\Área de Trabalho\bardosomm\Backend\src\main\java\br\com\bardosom\api\dao\DashboardDAO.java
 C:\Users\fabic\OneDrive\Área de Trabalho\bardosomm\Backend\src\main\java\br\com\bardosom\api\dao\EventoDAO.java
 C:\Users\fabic\OneDrive\Área de Trabalho\bardosomm\Backend\src\main\java\br\com\bardosom\api\dao\MesaDAO.java
 C:\Users\fabic\OneDrive\Área de Trabalho\bardosomm\Backend\src\main\java\br\com\bardosom\api\dao\PedidoDAO.java
