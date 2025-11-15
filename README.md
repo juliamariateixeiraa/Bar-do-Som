@@ -86,6 +86,53 @@ Essas análises ajudam a compreender padrões de consumo e apoiar decisões estr
 
 ---
 
+## 🚀 Como clonar e rodar o projeto
+
+### 1️⃣ Clone o repositório
+```bash
+git clone https://github.com/juliamariateixeiraa/Bar-do-Som.git
+cd bar-do-som
+```
+
+### 2️⃣ Importe o banco de dados
+
+**MySQL Workbench:**
+1. Abra o MySQL Workbench
+2. Server → Data Import
+3. Import from Self-Contained File
+4. Selecione: `Backend/database/bar_do_som.sql`
+5. Start Import
+
+**Ou via terminal:**
+```bash
+mysql -u root -p < Backend/database/bar_do_som.sql
+```
+
+### 3️⃣ Configure o Backend
+
+Edite: `Backend/src/main/resources/application.properties`
+```properties
+spring.datasource.password=Bardosom1234
+```
+
+### 4️⃣ Rode o Backend
+```bash
+cd Backend
+mvn spring-boot:run
+```
+
+Backend: `http://localhost:8080`
+
+### 5️⃣ Rode o Frontend
+```bash
+npm install
+npm run dev
+```
+
+Frontend: `http://localhost:5173`
+
+---
+
 ## 👩‍💻 Integrantes do Projeto
 
 | Nome | E-mail |
