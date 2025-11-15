@@ -10,6 +10,8 @@ import ProdutosPage from './ProdutosPage';
 import ReservasPage from './ReservasPage';
 import FuncionariosPage from './FuncionariosPage';
 import RelatoriosPage from './RelatoriosPage';
+import FuncoesProcedures from './FuncoesProcedures';
+import ConsultasViews from './ConsultasViews';
 
 function App() {
   return (
@@ -28,7 +30,7 @@ function App() {
         <Route path="produtos" element={<ProdutosPage />} />
         <Route path="reservas" element={<ReservasPage />} />
         <Route path="funcionarios" element={<FuncionariosPage />} />
-        <Route path="relatorios" element={<RelatoriosPage />} />
+        <Route path="relatorios" element={<RelatoriosPage />} /><Route path="/funcoes-procedures" element={<FuncoesProcedures />} /><Route path="/consultas-views" element={<ConsultasViews />} />
       </Route>
     </Routes>
   );

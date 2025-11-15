@@ -4,6 +4,7 @@ import AddEventoModal from './AddEventoModal';
 import './ClientesPage.css';
 import './EditClienteModal.css';
 
+
 const EventosPage = () => {
     const [eventos, setEventos] = useState([]);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);

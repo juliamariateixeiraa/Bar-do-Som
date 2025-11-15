@@ -224,4 +224,155 @@ public class DashboardDAO {
 
         return status;
     }
+
+    // ========== FUNÇÕES ==========
+
+    /**
+     * FUNÇÃO 1: Calcular ticket médio de um cliente
+     * Chama a função SQL: SELECT calcular_ticket_medio(?)
+     */
+    public Map<String, Object> calcularTicketMedio(Long clienteId) {
+        Map<String, Object> resultado = new HashMap<>();
+        try {
+            // Tenta chamar a função SQL
+            String sql = "SELECT calcular_ticket_medio(?) as ticket_medio";
+            Double ticketMedio = jdbcTemplate.queryForObject(sql, Double.class, clienteId);
+
+            resultado.put("cliente_id", clienteId);
+            resultado.put("ticket_medio", ticketMedio != null ? ticketMedio : 0.0);
+            resultado.put("sucesso", true);
+        } catch (Exception e) {
+            System.err.println("❌ Erro ao calcular ticket médio (função pode não existir): " + e.getMessage());
+
+            // Fallback: calcula diretamente com SQL
+            String sqlFallback = "SELECT AVG(total) as ticket_medio FROM pedidos WHERE id_cliente = ?";
+            Double ticketMedio = jdbcTemplate.queryForObject(sqlFallback, Double.class, clienteId);
+
+            resultado.put("cliente_id", clienteId);
+            resultado.put("ticket_medio", ticketMedio != null ? ticketMedio : 0.0);
+            resultado.put("sucesso", true);
+            resultado.put("aviso", "Função SQL não encontrada, usando cálculo direto");
+        }
+        return resultado;
+    }
+
+    /**
+     * FUNÇÃO 2: Verificar status do estoque de um produto (com condicional)
+     * Chama a função SQL: SELECT verificar_estoque_baixo(?)
+     */
+    public Map<String, Object> verificarEstoque(Long produtoId) {
+        Map<String, Object> resultado = new HashMap<>();
+        try {
+            // Tenta chamar a função SQL
+            String sql = "SELECT verificar_estoque_baixo(?) as status_estoque";
+            String status = jdbcTemplate.queryForObject(sql, String.class, produtoId);
+
+            resultado.put("produto_id", produtoId);
+            resultado.put("status", status);
+            resultado.put("sucesso", true);
+        } catch (Exception e) {
+            System.err.println("❌ Erro ao verificar estoque (função pode não existir): " + e.getMessage());
+
+            // Fallback: verifica diretamente com SQL
+            String sqlFallback = """
+                SELECT 
+                    CASE 
+                        WHEN estoque = 0 THEN 'ESGOTADO'
+                        WHEN estoque < 10 THEN 'ESTOQUE BAIXO'
+                        ELSE 'ESTOQUE OK'
+                    END as status
+                FROM produtos 
+                WHERE id_produto = ?
+            """;
+            String status = jdbcTemplate.queryForObject(sqlFallback, String.class, produtoId);
+
+            resultado.put("produto_id", produtoId);
+            resultado.put("status", status);
+            resultado.put("sucesso", true);
+            resultado.put("aviso", "Função SQL não encontrada, usando verificação direta");
+        }
+        return resultado;
+    }
+
+    // ========== PROCEDURES ==========
+
+    /**
+     * PROCEDURE 1: Atualizar estoque de produto
+     * Chama: CALL atualizar_estoque(?, ?)
+     */
+    public Map<String, Object> atualizarEstoque(Long produtoId, Integer quantidade) {
+        Map<String, Object> resultado = new HashMap<>();
+        try {
+            // Tenta chamar a procedure
+            String sql = "CALL atualizar_estoque(?, ?)";
+            jdbcTemplate.update(sql, produtoId, quantidade);
+
+            resultado.put("sucesso", true);
+            resultado.put("mensagem", "Estoque atualizado com sucesso");
+            resultado.put("produto_id", produtoId);
+            resultado.put("nova_quantidade", quantidade);
+        } catch (Exception e) {
+            System.err.println("❌ Erro ao atualizar estoque (procedure pode não existir): " + e.getMessage());
+
+            // Fallback: atualiza diretamente
+            String sqlFallback = "UPDATE produtos SET estoque = ? WHERE id_produto = ?";
+            jdbcTemplate.update(sqlFallback, quantidade, produtoId);
+
+            resultado.put("sucesso", true);
+            resultado.put("mensagem", "Estoque atualizado com sucesso");
+            resultado.put("produto_id", produtoId);
+            resultado.put("nova_quantidade", quantidade);
+            resultado.put("aviso", "Procedure não encontrada, usando UPDATE direto");
+        }
+        return resultado;
+    }
+
+    /**
+     * PROCEDURE 2: Processar pedidos em lote usando CURSOR
+     * Chama: CALL processar_pedidos_lote()
+     */
+    public Map<String, Object> processarPedidosComCursor() {
+        Map<String, Object> resultado = new HashMap<>();
+        try {
+            // Tenta chamar a procedure com cursor
+            String sql = "CALL processar_pedidos_lote()";
+            jdbcTemplate.update(sql);
+
+            resultado.put("sucesso", true);
+            resultado.put("mensagem", "Pedidos processados com sucesso");
+        } catch (Exception e) {
+            System.err.println("❌ Erro ao processar pedidos (procedure pode não existir): " + e.getMessage());
+
+            resultado.put("sucesso", false);
+            resultado.put("mensagem", "Procedure não implementada");
+            resultado.put("aviso", "Crie a procedure 'processar_pedidos_lote' no banco de dados");
+        }
+        return resultado;
+    }
+
+    // ========== TRIGGERS (LOGS) ==========
+
+    /**
+     * Busca logs gerados pelos triggers
+     */
+    public List<Map<String, Object>> buscarLogs() {
+        try {
+            String sql = """
+                SELECT 
+                    id_log,
+                    acao,
+                    tabela,
+                    usuario,
+                    detalhes,
+                    data_hora
+                FROM logs_auditoria
+                ORDER BY data_hora DESC
+                LIMIT 100
+            """;
+            return jdbcTemplate.queryForList(sql);
+        } catch (Exception e) {
+            System.err.println("❌ Erro ao buscar logs (tabela pode não existir): " + e.getMessage());
+            return List.of(); // Retorna lista vazia
+        }
+    }
 }

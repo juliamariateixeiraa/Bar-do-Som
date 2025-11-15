@@ -4,6 +4,9 @@ import br.com.bardosom.api.dao.DashboardDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,5 +57,38 @@ public class DashboardController {
     @GetMapping("/status-estoque")
     public Map<String, Object> getStatusEstoque() {
         return dashboardDAO.obterStatusEstoque();
+    }
+
+    // ========== FUNÇÕES ==========
+
+    @GetMapping("/funcoes/ticket-medio/{clienteId}")
+    public Map<String, Object> calcularTicketMedio(@PathVariable Long clienteId) {
+        return dashboardDAO.calcularTicketMedio(clienteId);
+    }
+
+    @GetMapping("/funcoes/verificar-estoque/{produtoId}")
+    public Map<String, Object> verificarEstoque(@PathVariable Long produtoId) {
+        return dashboardDAO.verificarEstoque(produtoId);
+    }
+
+    // ========== PROCEDURES ==========
+
+    @PostMapping("/procedures/atualizar-estoque")
+    public Map<String, Object> atualizarEstoque(@RequestBody Map<String, Object> params) {
+        Long produtoId = Long.parseLong(params.get("produtoId").toString());
+        Integer quantidade = Integer.parseInt(params.get("quantidade").toString());
+        return dashboardDAO.atualizarEstoque(produtoId, quantidade);
+    }
+
+    @PostMapping("/procedures/processar-pedidos")
+    public Map<String, Object> processarPedidos() {
+        return dashboardDAO.processarPedidosComCursor();
+    }
+
+    // ========== TRIGGERS (LOGS) ==========
+
+    @GetMapping("/triggers/logs")
+    public List<Map<String, Object>> getLogs() {
+        return dashboardDAO.buscarLogs();
     }
 }

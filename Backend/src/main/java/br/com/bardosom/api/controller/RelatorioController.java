@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -55,5 +56,39 @@ public class RelatorioController {
     @GetMapping("/clientes-faixa-etaria")
     public List<Map<String, Object>> getClientesPorFaixaEtaria() {
         return relatorioDAO.obterClientesPorFaixaEtaria();
+    }
+
+    // ========== CONSULTAS AVANÇADAS E VIEWS ==========
+
+    @GetMapping("/consultas/anti-join")
+    public List<Map<String, Object>> getClientesSemPedidos() {
+        return relatorioDAO.clientesSemPedidos();
+    }
+
+    @GetMapping("/consultas/full-outer-join")
+    public List<Map<String, Object>> getFullOuterJoin() {
+        return relatorioDAO.fullOuterJoinClientesEventos();
+    }
+
+    @GetMapping("/consultas/subconsulta1")
+    public List<Map<String, Object>> getProdutosAcimaDaMedia() {
+        return relatorioDAO.produtosAcimaDaMedia();
+    }
+
+    @GetMapping("/consultas/subconsulta2")
+    public List<Map<String, Object>> getClientesComMuitosPedidos(
+            @RequestParam(required = false, defaultValue = "5") Integer minPedidos
+    ) {
+        return relatorioDAO.clientesComMuitosPedidos(minPedidos);
+    }
+
+    @GetMapping("/consultas/view1")
+    public List<Map<String, Object>> getViewVendasPorProduto() {
+        return relatorioDAO.consultarViewVendasPorProduto();
+    }
+
+    @GetMapping("/consultas/view2")
+    public List<Map<String, Object>> getViewEventosReservas() {
+        return relatorioDAO.consultarViewEventosReservas();
     }
 }
