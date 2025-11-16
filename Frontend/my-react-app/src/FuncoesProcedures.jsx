@@ -1,4 +1,3 @@
-// src/FuncoesProcedures.jsx
 import React, { useState, useEffect } from 'react';
 import './FuncoesProcedures.css';
 
@@ -11,15 +10,13 @@ function FuncoesProcedures() {
     const [produtoIdPedido, setProdutoIdPedido] = useState('');
     const [quantidadePedido, setQuantidadePedido] = useState('');
 
-    const API_BASE = 'http://localhost:8080'; // Ou a sua API_BASE real
+    const API_BASE = 'http://localhost:8080';
 
     const buscarLogs = async () => {
         try {
-            // CORREÇÃO DA ROTA: Chama o endpoint correto do PedidoController
             const response = await fetch(`${API_BASE}/pedidos/logs`); 
 
             if (!response.ok) {
-                // Se o Controller retornar um erro
                 setLogsDisponiveis(false);
                 setLogs([]);
                 return;
@@ -27,12 +24,10 @@ function FuncoesProcedures() {
 
             const data = await response.json();
 
-            // Esperamos que 'data' seja uma lista de logs
             if (Array.isArray(data)) {
                 setLogs(data);
                 setLogsDisponiveis(true);
             } else {
-                // Em caso de resposta vazia ou formato inesperado
                 setLogs([]);
                 setLogsDisponiveis(true);
             }
@@ -55,7 +50,7 @@ function FuncoesProcedures() {
 
                 <div className="funcao-card">
                     <h3>Calcular Idade por ID 🎂</h3>
-                    <p>Busca o nome e calcula a idade de um cliente específico usando a Função SQL.</p>
+                    <p>Busca o nome e calcula a idade de um cliente específico.</p>
                     <div className="funcao-form">
                         <input 
                             type="number" 
@@ -104,7 +99,7 @@ function FuncoesProcedures() {
                 </div>
 
                 <div className="funcao-card">
-                    <h3>Verificar Status do Estoque (Função SQL)</h3>
+                    <h3>Verificar Status do Estoque</h3>
                     <p>Verifica o status do estoque (Em Estoque, Estoque Baixo, Fora de Estoque) de um produto específico.</p>
                     <div className="funcao-form">
                         <input 
@@ -229,8 +224,8 @@ function FuncoesProcedures() {
                 <h2>🔔 Triggers e Logs</h2>
 
                 <div className="funcao-card">
-                    <h3>Realizar Pedido e Baixa de Estoque (Trigger) 🛒</h3>
-                    <p>Insere um pedido e item. O Trigger **`tg_before_insert_pedido_produto`** reduz o estoque automaticamente.</p>
+                    <h3>Realizar Pedido e Baixa de Estoque 🛒</h3>
+                    <p>Insere um pedido e item. O Trigger reduz o estoque automaticamente.</p>
                     <div className="funcao-form">
                         <input 
                             type="number" 
