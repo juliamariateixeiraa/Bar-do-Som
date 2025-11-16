@@ -93,41 +93,68 @@ function FuncoesProcedures() {
                 <h2>⚙️ Procedures (Procedimentos)</h2>
 
                 <div className="funcao-card">
-                    <h3>Atualizar Estoque de Produto</h3>
-                    <p>Atualiza a quantidade em estoque de um produto</p>
+                    <h3>Atualizar Status da Mesa 🪑</h3>
+                    <p>Define o status de disponibilidade (Ex: 'OCUPADA', 'DISPONIVEL')</p>
                     <div className="funcao-form">
-                        <input type="number" placeholder="ID do Produto" id="procProdutoId" />
-                        <input type="number" placeholder="Nova Quantidade" id="procQuantidade" />
+                        <input type="number" placeholder="ID da Mesa" id="procMesaId" />
+                        <input type="text" placeholder="Novo Status (Ex: OCUPADA)" id="procNovoStatus" />
                         <button onClick={() => {
-                            const id = document.getElementById('procProdutoId').value;
-                            const qtd = document.getElementById('procQuantidade').value;
-                            if (!id || !qtd) return;
+                            const mesaId = document.getElementById('procMesaId').value;
+                            const novoStatus = document.getElementById('procNovoStatus').value;
+
+                            if (!mesaId || !novoStatus) return;
+
                             setLoading(true);
-                            fetch(`${API_BASE}/dashboard/procedures/atualizar-estoque`, {
-                                method: 'POST',
+                            
+                            fetch(`${API_BASE}/mesas/status/${mesaId}`, {
+                                method: 'PUT', 
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ produtoId: id, quantidade: qtd })
+                                body: JSON.stringify({ status: novoStatus })
                             })
-                                .then(res => res.json())
-                                .then(data => { setResultado(data); setLoading(false); })
-                                .catch(err => { setResultado({ erro: err.message }); setLoading(false); });
+                                .then(res => {
+                                    if (res.ok) {
+                                        return res.text();
+                                    }
+                                    return res.text().then(text => { throw new Error(text); });
+                                })
+                                .then(data => {
+                                    setResultado({ sucesso: data, mesaId: mesaId, novoStatus: novoStatus });
+                                    setLoading(false);
+                                })
+                                .catch(err => { 
+                                    setResultado({ erro: err.message, mesaId: mesaId, novoStatus: novoStatus }); 
+                                    setLoading(false); 
+                                });
                         }}>
-                            Atualizar Estoque
+                            Atualizar Status
                         </button>
                     </div>
                 </div>
 
                 <div className="funcao-card">
-                    <h3>Processar Pedidos em Lote (CURSOR)</h3>
-                    <p>Processa múltiplos pedidos usando cursor</p>
+                    <h3>Ajustar Público Estimado dos Eventos 📈</h3>
+                    <p>Executa a lógica de cursor para recalcular o público estimado com base no número de artistas.</p>
                     <button onClick={() => {
                         setLoading(true);
-                        fetch(`${API_BASE}/dashboard/procedures/processar-pedidos`, { method: 'POST' })
-                            .then(res => res.json())
-                            .then(data => { setResultado(data); setLoading(false); })
-                            .catch(err => { setResultado({ erro: err.message }); setLoading(false); });
+                        fetch(`${API_BASE}/eventos/ajustar-publico`, { 
+                            method: 'POST' 
+                        })
+                            .then(res => {
+                                if (res.ok) {
+                                    return res.text();
+                                }
+                                return res.text().then(text => { throw new Error(text); });
+                            })
+                            .then(data => { 
+                                setResultado({ mensagem: data, sucesso: true }); 
+                                setLoading(false); 
+                            })
+                            .catch(err => { 
+                                setResultado({ erro: err.message }); 
+                                setLoading(false); 
+                            });
                     }}>
-                        Processar Pedidos
+                        Ajustar Público
                     </button>
                 </div>
             </section>

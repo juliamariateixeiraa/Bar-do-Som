@@ -128,13 +128,13 @@ public class EventoController {
  * Rota: POST http://localhost:8080/eventos/ajustar-publico
  */
     @PostMapping("/ajustar-publico")
-        public ResponseEntity<String> ajustarPublicoEstimado() {
-            try {
-                eventoDAO.ajustarPublicoEstimado();
-                return ResponseEntity.ok("Ajuste do público estimado dos eventos concluído com sucesso.");
-            } catch (Exception e) {
-                System.err.println("Erro ao ajustar público estimado: " + e.getMessage());
-                return ResponseEntity.internalServerError().body("Erro ao ajustar público estimado: " + e.getMessage());
-            }
+    public ResponseEntity<String> ajustarPublicoEstimado() {
+        try {
+            eventoDAO.ajustarPublicoEstimado();
+            return ResponseEntity.ok("Ajuste do público estimado dos eventos concluído com sucesso.");
+        } catch (Exception e) {
+            System.err.println("Erro ao ajustar público estimado: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("Erro ao ajustar público estimado: " + e.getMessage());
         }
+    }
 }
