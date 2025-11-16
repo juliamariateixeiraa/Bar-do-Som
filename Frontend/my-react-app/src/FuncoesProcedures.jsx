@@ -41,6 +41,15 @@ function FuncoesProcedures() {
         buscarLogs();
     }, []);
 
+    const getStatusColor = (status) => {
+        if (!status) return '#4A5568';
+        const s = status.toLowerCase();
+        if (s.includes('em estoque')) return '#38A169';
+        if (s.includes('baixo')) return '#DD6B20'; 
+        if (s.includes('fora')) return '#E53E3E'; 
+        return '#4A5568';
+    };
+
     return (
         <div className="funcoes-container">
             <h1>Funções, Procedures e Triggers</h1>
@@ -75,8 +84,10 @@ function FuncoesProcedures() {
                                 })
                                 .then(data => {
                                     setResultado({
-                                        mensagem: `Idade de ${data.nome} calculada com sucesso.`,
-                                        cliente: data
+                                        type: 'idade', 
+                                        nome: data.nome,
+                                        idade: data.idade, 
+                                        dataHoje: new Date().toLocaleDateString('pt-BR'),
                                     });
                                     setLoading(false);
                                 })
@@ -123,11 +134,11 @@ function FuncoesProcedures() {
                                 })
                                 .then(data => { 
                                     setResultado({ 
-                                        mensagem: `Status de Estoque para ${data.nome} (ID ${data.id_produto})`,
-                                        detalhes: {
-                                            Estoque: data.estoque,
-                                            Status: data.status_estoque
-                                        }
+                                        type: 'estoque', 
+                                        nomeProduto: data.nome,
+                                        estoqueAtual: data.estoque,
+                                        statusEstoque: data.status_estoque,
+                                        dataHoje: new Date().toLocaleDateString('pt-BR'),
                                     }); 
                                     setLoading(false); 
                                 })
@@ -166,7 +177,9 @@ function FuncoesProcedures() {
                             if (!mesaId || !novoStatus) return;
 
                             setLoading(true);
-                            
+
+                            const statusAntigoSimulado = "DESCONHECIDO"; 
+
                             fetch(`${API_BASE}/mesas/status/${mesaId}`, {
                                 method: 'PUT', 
                                 headers: { 'Content-Type': 'application/json' },
@@ -179,7 +192,13 @@ function FuncoesProcedures() {
                                     return res.text().then(text => { throw new Error(text); });
                                 })
                                 .then(data => {
-                                    setResultado({ sucesso: data, mesaId: mesaId, novoStatus: novoStatus });
+                                    setResultado({ 
+                                        type: 'statusMesa', 
+                                        idMesa: mesaId,
+                                        statusAntigo: statusAntigoSimulado,
+                                        statusNovo: novoStatus.toUpperCase(),
+                                        dataHora: new Date().toLocaleString('pt-BR'),
+                                    });
                                     setLoading(false);
                                 })
                                 .catch(err => { 
@@ -207,7 +226,14 @@ function FuncoesProcedures() {
                                 return res.text().then(text => { throw new Error(text); });
                             })
                             .then(data => { 
-                                setResultado({ mensagem: data, sucesso: true }); 
+                              
+                                setResultado({ 
+                                    type: 'ajustePublico', 
+                                    mensagem: data, 
+                                    processo: "Procedure SQL com Cursors",
+                                    descricao: "A Procedure iterou sobre os eventos, usando um cursor para recalcular o público estimado com base em regras internas (ex: número de artistas ou tamanho do local).",
+                                    dataHora: new Date().toLocaleString('pt-BR'),
+                                }); 
                                 setLoading(false); 
                             })
                             .catch(err => { 
@@ -223,7 +249,7 @@ function FuncoesProcedures() {
             <section className="funcao-section">
                 <h2>🔔 Triggers e Logs</h2>
 
-                <div className="funcao-card">
+               <div className="funcao-card">
                     <h3>Realizar Pedido e Baixa de Estoque 🛒</h3>
                     <p>Insere um pedido e item. O Trigger reduz o estoque automaticamente.</p>
                     <div className="funcao-form">
@@ -245,7 +271,7 @@ function FuncoesProcedures() {
                             value={quantidadePedido}
                             onChange={(e) => setQuantidadePedido(e.target.value)}
                         />
-                        <button onClick={() => {
+                        <button onClick={async () => { 
                             const idCliente = parseInt(clienteIdPedido);
                             const idProduto = parseInt(produtoIdPedido);
                             const quantidade = parseInt(quantidadePedido);
@@ -256,6 +282,26 @@ function FuncoesProcedures() {
                             }
 
                             setLoading(true);
+
+                            let produtoNome = `Produto ID ${idProduto}`;
+                            let estoqueAnterior = -1;
+
+                            try {
+                                const statusRes = await fetch(`${API_BASE}/produtos/status/${idProduto}`);
+                                if (statusRes.ok) {
+                                    const statusData = await statusRes.json();
+                                    produtoNome = statusData.nome;
+                                    estoqueAnterior = statusData.estoque;
+                                    
+                                    if (estoqueAnterior < quantidade) {
+                                        setResultado({ erro: `Estoque insuficiente! Apenas ${estoqueAnterior} em estoque.`, tipo: 'alerta' });
+                                        setLoading(false);
+                                        return;
+                                    }
+                                }
+                            } catch (e) {
+                                console.error("Erro ao buscar status anterior:", e);
+                            }
 
                             const checkoutData = {
                                 idCliente: idCliente,
@@ -268,33 +314,39 @@ function FuncoesProcedures() {
                                 ]
                             };
 
-                            fetch(`${API_BASE}/pedidos/checkout`, {
-                                method: 'POST', 
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(checkoutData)
-                            })
-                                .then(res => {
-                                    if (!res.ok) {
-                                        return res.text().then(text => { throw new Error(text); });
-                                    }
-                                    return res.text();
-                                })
-                                .then(data => {
-                                    setResultado({ 
-                                        sucesso: `Pedido realizado com sucesso!`,
-                                        detalhes: data,
-                                        aviso: `O Trigger de Estoque foi ativado no banco de dados. Verifique o estoque do Produto ID ${idProduto} na seção "Verificar Status do Estoque".`
-                                    });
-                                    setClienteIdPedido('');
-                                    setProdutoIdPedido('');
-                                    setQuantidadePedido('');
-                                    buscarLogs(); 
-                                    setLoading(false);
-                                })
-                                .catch(err => { 
-                                    setResultado({ erro: "Falha ao realizar pedido.", detalhes: err.message }); 
-                                    setLoading(false); 
+                            try {
+                                const res = await fetch(`${API_BASE}/pedidos/checkout`, {
+                                    method: 'POST', 
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify(checkoutData)
                                 });
+
+                                if (!res.ok) {
+                                    const text = await res.text();
+                                    throw new Error(text);
+                                }
+                                const data = await res.text();
+                                
+                                setResultado({ 
+                                    type: 'baixaEstoque', 
+                                    idPedido: data.match(/Pedido (\d+)/)?.[1] || 'N/A',
+                                    nomeProduto: produtoNome,
+                                    quantidadeRetirada: quantidade,
+                                    estoqueAnterior: estoqueAnterior,
+                                    estoqueNovo: estoqueAnterior - quantidade, 
+                                    dataHora: new Date().toLocaleString('pt-BR'),
+                                });
+                                
+                                setClienteIdPedido('');
+                                setProdutoIdPedido('');
+                                setQuantidadePedido('');
+                                buscarLogs(); 
+                                setLoading(false);
+
+                            } catch (err) { 
+                                setResultado({ erro: "Falha ao realizar pedido.", detalhes: err.message }); 
+                                setLoading(false); 
+                            }
                         }}>
                             Fazer Pedido
                         </button>
@@ -350,7 +402,134 @@ function FuncoesProcedures() {
             {resultado && (
                 <div className="resultado-box">
                     <h3>✅ Resultado da Execução</h3>
-                    <pre>{JSON.stringify(resultado, null, 2)}</pre>
+                    
+                    {resultado.type === 'idade' ? (
+                        <div className="idade-resultado-card">
+                            <h4 style={{ color: '#2C5282', marginBottom: '1rem' }}>🎉 Idade Calculada com Sucesso</h4>
+                            <div className="idade-info-item">
+                                <span className="idade-label">👤 Cliente:</span>
+                                <span className="idade-value">{resultado.nome}</span>
+                            </div>
+                            <div className="idade-info-item">
+                                <span className="idade-label">🎂 Idade Atual:</span>
+                                <span className="idade-value destaque">{resultado.idade} anos</span>
+                            </div>
+                            <div className="idade-info-item">
+                                <span className="idade-label">🗓️ Data do Cálculo:</span>
+                                <span className="idade-value">{resultado.dataHoje}</span>
+                            </div>
+                        </div>
+                    ) : 
+                    resultado.type === 'estoque' ? (
+                        <div className="estoque-resultado-card" style={{ borderColor: getStatusColor(resultado.statusEstoque) }}>
+                            <h4 style={{ color: getStatusColor(resultado.statusEstoque), marginBottom: '1rem' }}>📦 Status de Estoque Verificado</h4>
+                            <div className="estoque-info-item">
+                                <span className="estoque-label">🏷️ Produto:</span>
+                                <span className="estoque-value">{resultado.nomeProduto}</span>
+                            </div>
+                            <div className="estoque-info-item">
+                                <span className="estoque-label">🔢 Estoque Atual:</span>
+                                <span className="estoque-value">{resultado.estoqueAtual} unidades</span>
+                            </div>
+                            <div className="estoque-info-item">
+                                <span className="estoque-label">🚨 Status:</span>
+                                <span className="estoque-value destaque-status" style={{ color: getStatusColor(resultado.statusEstoque), fontWeight: '700' }}>
+                                    {resultado.statusEstoque}
+                                </span>
+                            </div>
+                            <div className="estoque-info-item">
+                                <span className="estoque-label">🗓️ Data da Consulta:</span>
+                                <span className="estoque-value">{resultado.dataHoje}</span>
+                            </div>
+                        </div>
+                    ) : 
+                    resultado.type === 'statusMesa' ? (
+                        <div className="mesa-resultado-card">
+                            <h4 style={{ color: '#805AD5', marginBottom: '1rem' }}>🪑 Status da Mesa Atualizado</h4>
+                            <div className="mesa-info-item">
+                                <span className="mesa-label">🆔 Número da Mesa:</span>
+                                <span className="mesa-value">{resultado.idMesa}</span>
+                            </div>
+                            <div className="mesa-info-item">
+                                <span className="mesa-label">✅ Novo Status:</span>
+                                <span className="mesa-value destaque-mesa">{resultado.statusNovo}</span>
+                            </div>
+                            <div className="mesa-info-item">
+                                <span className="mesa-label">⏱️ Data/Hora da Ação:</span>
+                                <span className="mesa-value">{resultado.dataHora}</span>
+                            </div>
+                        </div>
+                    ) : 
+                    resultado.type === 'baixaEstoque' ? (
+                        <div className="trigger-resultado-card">
+                            <h4 style={{ color: '#48BB78', marginBottom: '1rem' }}>🛒 Pedido Processado (Trigger Ativado)</h4>
+                            
+                            <div className="trigger-info-item">
+                                <span className="trigger-label"># Pedido:</span>
+                                <span className="trigger-value" style={{ fontWeight: 'bold' }}>{resultado.idPedido}</span>
+                            </div>
+
+                            <div className="trigger-info-item">
+                                <span className="trigger-label">🏷️ Produto Afetado:</span>
+                                <span className="trigger-value">{resultado.nomeProduto}</span>
+                            </div>
+
+                            <div className="trigger-info-item">
+                                <span className="trigger-label">➖ Quantidade Retirada:</span>
+                                <span className="trigger-value destaque-retirada">-{resultado.quantidadeRetirada} un.</span>
+                            </div>
+                            <hr style={{ margin: '10px 0', borderColor: '#E2E8F0' }} />
+
+                            <div className="trigger-info-item">
+                                <span className="trigger-label">📦 Estoque Anterior:</span>
+                                <span className="trigger-value">{resultado.estoqueAnterior} un.</span>
+                            </div>
+
+                            <div className="trigger-info-item">
+                                <span className="trigger-label">✅ Novo Estoque:</span>
+                                <span className="trigger-value destaque-novo">{resultado.estoqueNovo} un.</span>
+                            </div>
+                            
+                            <p style={{ marginTop: '15px', fontSize: '0.9rem', color: '#4A5568' }}>
+                                A baixa de estoque foi realizada pelo Trigger **`tg_before_insert_pedido_produto`** no banco de dados.
+                            </p>
+                        </div>
+                    ) : 
+                    resultado.type === 'ajustePublico' ? (
+                        <div className="evento-resultado-card">
+                            <h4 style={{ color: '#00B5AD', marginBottom: '1rem' }}>📈 Ajuste de Público Concluído</h4>
+                            
+                            <div className="evento-info-item">
+                                <span className="evento-label">Procedimento Executado:</span>
+                                <span className="evento-value destaque-evento">{resultado.processo}</span>
+                            </div>
+                            
+                            <div className="evento-info-item">
+                                <span className="evento-label">🔢 Eventos Ajustados:</span>
+                                <span className="evento-value destaque-evento-num">{resultado.eventosAjustados || 0}</span>
+                            </div>
+                            <div className="evento-info-item">
+                                <span className="evento-label">👥 Público Ajustado (Total):</span>
+                                <span className="evento-value destaque-evento-num">{resultado.totalAjuste || 0}</span>
+                            </div>
+
+                            <div className="evento-info-item">
+                                <span className="evento-label">Data e Hora:</span>
+                                <span className="evento-value">{resultado.dataHora}</span>
+                            </div>
+                            
+                            <p style={{ marginTop: '15px', color: '#4A5568', fontSize: '0.95rem', borderLeft: '3px solid #00B5AD', paddingLeft: '10px' }}>
+                                <strong>Descrição da Ação:</strong> {resultado.descricao}
+                            </p>
+
+                            <p style={{ marginTop: '10px', fontSize: '0.9rem', fontStyle: 'italic', color: '#4A5568' }}>
+                                Mensagem do Servidor: {resultado.mensagem}
+                            </p>
+                        </div>
+                    ) : (
+                        <pre>{JSON.stringify(resultado, null, 2)}</pre>
+                    )}
+
                     <button onClick={() => setResultado(null)} style={{ marginTop: '1rem', padding: '0.5rem 1rem', background: '#e53e3e', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
                         Fechar
                     </button>
@@ -363,7 +542,7 @@ function FuncoesProcedures() {
                     <p>Executando...</p>
                 </div>
             )}
-        </div>
+            </div>
     );
 }
 
