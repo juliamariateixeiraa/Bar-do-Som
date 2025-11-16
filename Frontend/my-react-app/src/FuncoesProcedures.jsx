@@ -8,13 +8,15 @@ function FuncoesProcedures() {
     const [logs, setLogs] = useState([]);
     const [logsDisponiveis, setLogsDisponiveis] = useState(true);
 
-    const API_BASE = 'http://localhost:8080';
+    const API_BASE = 'http://localhost:8080'; // Ou a sua API_BASE real
 
     const buscarLogs = async () => {
         try {
-            const response = await fetch(`${API_BASE}/dashboard/triggers/logs`);
+            // CORREÇÃO DA ROTA: Chama o endpoint correto do PedidoController
+            const response = await fetch(`${API_BASE}/pedidos/logs`); 
 
             if (!response.ok) {
+                // Se o Controller retornar um erro
                 setLogsDisponiveis(false);
                 setLogs([]);
                 return;
@@ -22,14 +24,12 @@ function FuncoesProcedures() {
 
             const data = await response.json();
 
-            // Garante array
+            // Esperamos que 'data' seja uma lista de logs
             if (Array.isArray(data)) {
                 setLogs(data);
                 setLogsDisponiveis(true);
-            } else if (data?.logs && Array.isArray(data.logs)) {
-                setLogs(data.logs);
-                setLogsDisponiveis(true);
             } else {
+                // Em caso de resposta vazia ou formato inesperado
                 setLogs([]);
                 setLogsDisponiveis(true);
             }
@@ -110,12 +110,10 @@ function FuncoesProcedures() {
                             id="produtoIdStatus" 
                         />
                         <button onClick={() => {
-                            const id = document.getElementById('produtoIdStatus').value; // Usando novo ID para evitar conflito
+                            const id = document.getElementById('produtoIdStatus').value; 
                             if (!id || isNaN(id)) return;
                             setLoading(true);
                             
-                            // CORREÇÃO DA ROTA: Usando o endpoint correto do ProdutoController
-                            // Rota: ${API_BASE}/produtos/status/{id}
                             fetch(`${API_BASE}/produtos/status/${id}`)
                                 .then(res => {
                                     if (!res.ok) {
@@ -126,7 +124,6 @@ function FuncoesProcedures() {
                                     return res.json();
                                 })
                                 .then(data => { 
-                                    // O resultado é o Map<String, Object> retornado pelo Controller
                                     setResultado({ 
                                         mensagem: `Status de Estoque para ${data.nome} (ID ${data.id_produto})`,
                                         detalhes: {
@@ -237,11 +234,12 @@ function FuncoesProcedures() {
                     {!logsDisponiveis ? (
                         <div style={{ textAlign: 'center', padding: '2rem', color: '#718096', background: '#f7fafc', borderRadius: '10px', margin: '1rem 0' }}>
                             <p style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>📋 Tabela de logs não encontrada</p>
-                            <small>Crie a tabela <code>logs_auditoria</code> no banco de dados</small>
+                            {/* Nome da tabela corrigido */}
+                            <small>Crie a tabela <code>log_operacoes</code> no banco de dados</small>
                         </div>
                     ) : logs.length === 0 ? (
                         <div style={{ textAlign: 'center', padding: '2rem', color: '#718096', background: '#f7fafc', borderRadius: '10px', margin: '1rem 0' }}>
-                            <p>Nenhum log registrado ainda</p>
+                            <p>Nenhum log de pedido registrado ainda</p>
                         </div>
                     ) : (
                         <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
@@ -249,9 +247,8 @@ function FuncoesProcedures() {
                                 <thead>
                                 <tr>
                                     <th>Data/Hora</th>
-                                    <th>Ação</th>
-                                    <th>Tabela</th>
-                                    <th>Usuário</th>
+                                    <th>Tabela Afetada</th>
+                                    <th>Operação</th>
                                     <th>Detalhes</th>
                                 </tr>
                                 </thead>
@@ -259,9 +256,14 @@ function FuncoesProcedures() {
                                 {logs.map((log, idx) => (
                                     <tr key={idx}>
                                         <td>{log.data_hora ? new Date(log.data_hora).toLocaleString('pt-BR') : '-'}</td>
-                                        <td><span className={`badge ${(log.acao || '').toLowerCase()}`}>{log.acao || 'N/A'}</span></td>
-                                        <td>{log.tabela || '-'}</td>
-                                        <td>{log.usuario || '-'}</td>
+                                        
+                                        {/* CORRIGIDO: Mapeando para 'tabela_afetada' do BD */}
+                                        <td>{log.tabela_afetada || '-'}</td>
+                                        
+                                        {/* CORRIGIDO: Mapeando para 'operacao' do BD */}
+                                        <td><span className={`badge ${(log.operacao || '').toLowerCase()}`}>{log.operacao || 'N/A'}</span></td>
+                                        
+                                        {/* Mapeando para 'detalhes' do BD */}
                                         <td>{log.detalhes || '-'}</td>
                                     </tr>
                                 ))}
@@ -271,6 +273,7 @@ function FuncoesProcedures() {
                     )}
                 </div>
             </section>
+
 
             {resultado && (
                 <div className="resultado-box">
