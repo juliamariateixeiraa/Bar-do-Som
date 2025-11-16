@@ -155,4 +155,18 @@ public class ClienteDAO {
                 "ORDER BY mes_numero";
         return jdbcTemplate.queryForList(sql);
     }
+
+    public Map<String, Object> obterIdadePorId(int clienteId) {
+        String sql = "SELECT " +
+                "    c.nome, " +
+                "    c.data_nascimento, " +
+                "    CalcularIdadeCliente(c.data_nascimento) AS idade " +
+                "FROM " +
+                "    clientes c " +
+                "WHERE " +
+                "    c.id_cliente = ?";
+        
+        // queryForMap é usado para retornar um único objeto (cliente)
+        return jdbcTemplate.queryForMap(sql, clienteId);
+    }
 }

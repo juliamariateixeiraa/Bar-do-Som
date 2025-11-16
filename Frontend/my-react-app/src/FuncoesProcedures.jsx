@@ -51,39 +51,105 @@ function FuncoesProcedures() {
                 <h2>📊 Funções do Banco</h2>
 
                 <div className="funcao-card">
-                    <h3>Calcular Ticket Médio do Cliente</h3>
-                    <p>Retorna o valor médio gasto por um cliente específico</p>
+                    <h3>Calcular Idade por ID 🎂</h3>
+                    <p>Busca o nome e calcula a idade de um cliente específico usando a Função SQL.</p>
                     <div className="funcao-form">
-                        <input type="number" placeholder="ID do Cliente" id="clienteId" />
+                        <input 
+                            type="number" 
+                            placeholder="ID do Cliente" 
+                            id="clienteIdBusca" 
+                        />
                         <button onClick={() => {
-                            const id = document.getElementById('clienteId').value;
-                            if (!id) return;
+                            const id = document.getElementById('clienteIdBusca').value;
+                            
+                            if (!id || isNaN(id)) return; 
+
                             setLoading(true);
-                            fetch(`${API_BASE}/dashboard/funcoes/ticket-medio/${id}`)
-                                .then(res => res.json())
-                                .then(data => { setResultado(data); setLoading(false); })
-                                .catch(err => { setResultado({ erro: err.message }); setLoading(false); });
+                            
+                            fetch(`${API_BASE}/clientes/idade/${id}`)
+                                .then(res => {
+                                    if (!res.ok) {
+                                        return res.json().then(errorData => {
+                                            throw new Error(JSON.stringify(errorData));
+                                        });
+                                    }
+                                    return res.json();
+                                })
+                                .then(data => {
+                                    setResultado({
+                                        mensagem: `Idade de ${data.nome} calculada com sucesso.`,
+                                        cliente: data
+                                    });
+                                    setLoading(false);
+                                })
+                                .catch(err => { 
+                                    try {
+                                        const errorObj = JSON.parse(err.message);
+                                        setResultado({ 
+                                            erro: `Falha na requisição. Status: ${errorObj.status} (${errorObj.error}).`, 
+                                            detalhes: errorObj 
+                                        });
+                                    } catch (e) {
+                                        setResultado({ erro: "Erro desconhecido na comunicação.", detalhes: err.message });
+                                    }
+                                    setLoading(false); 
+                                });
                         }}>
-                            Executar Função
+                            Buscar Idade
                         </button>
                     </div>
                 </div>
 
                 <div className="funcao-card">
-                    <h3>Verificar Status do Estoque</h3>
-                    <p>Verifica se um produto está com estoque baixo (condicional)</p>
+                    <h3>Verificar Status do Estoque (Função SQL)</h3>
+                    <p>Verifica o status do estoque (Em Estoque, Estoque Baixo, Fora de Estoque) de um produto específico.</p>
                     <div className="funcao-form">
-                        <input type="number" placeholder="ID do Produto" id="produtoId" />
+                        <input 
+                            type="number" 
+                            placeholder="ID do Produto" 
+                            id="produtoIdStatus" 
+                        />
                         <button onClick={() => {
-                            const id = document.getElementById('produtoId').value;
-                            if (!id) return;
+                            const id = document.getElementById('produtoIdStatus').value; // Usando novo ID para evitar conflito
+                            if (!id || isNaN(id)) return;
                             setLoading(true);
-                            fetch(`${API_BASE}/dashboard/funcoes/verificar-estoque/${id}`)
-                                .then(res => res.json())
-                                .then(data => { setResultado(data); setLoading(false); })
-                                .catch(err => { setResultado({ erro: err.message }); setLoading(false); });
+                            
+                            // CORREÇÃO DA ROTA: Usando o endpoint correto do ProdutoController
+                            // Rota: ${API_BASE}/produtos/status/{id}
+                            fetch(`${API_BASE}/produtos/status/${id}`)
+                                .then(res => {
+                                    if (!res.ok) {
+                                        return res.json().then(errorData => {
+                                            throw new Error(JSON.stringify(errorData));
+                                        });
+                                    }
+                                    return res.json();
+                                })
+                                .then(data => { 
+                                    // O resultado é o Map<String, Object> retornado pelo Controller
+                                    setResultado({ 
+                                        mensagem: `Status de Estoque para ${data.nome} (ID ${data.id_produto})`,
+                                        detalhes: {
+                                            Estoque: data.estoque,
+                                            Status: data.status_estoque
+                                        }
+                                    }); 
+                                    setLoading(false); 
+                                })
+                                .catch(err => { 
+                                    try {
+                                        const errorObj = JSON.parse(err.message);
+                                        setResultado({ 
+                                            erro: `Produto não encontrado ou erro. Status: ${errorObj.status}.`, 
+                                            detalhes: errorObj 
+                                        });
+                                    } catch (e) {
+                                        setResultado({ erro: err.message || "Erro desconhecido na comunicação." }); 
+                                    }
+                                    setLoading(false); 
+                                });
                         }}>
-                            Verificar Estoque
+                            Verificar Status
                         </button>
                     </div>
                 </div>

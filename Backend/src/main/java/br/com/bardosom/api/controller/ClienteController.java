@@ -105,6 +105,29 @@ public class ClienteController {
         return clienteDAO.listarClientesComIdade();
     }
 
+    @GetMapping("/idade/{id}")
+    public ResponseEntity<Map<String, Object>> getIdadePorId(@PathVariable("id") int id) {
+        try {
+            Map<String, Object> resultado = clienteDAO.obterIdadePorId(id);
+            
+            // Adicionamos o ID de volta para clareza no resultado
+            resultado.put("id_cliente", id);
+            
+            return ResponseEntity.ok(resultado);
+
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            // Exceção lançada se o cliente com o ID não for encontrado
+            return ResponseEntity.status(404).body(
+                Map.of("erro", "Cliente com ID " + id + " não encontrado.")
+            );
+        } catch (Exception e) {
+            System.err.println("Erro ao calcular idade do cliente: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(
+                Map.of("erro", "Erro interno ao processar a função: " + e.getMessage())
+            );
+        }
+    }
+
     private static class ClienteRequest {
         private String nome;
         private String email;
