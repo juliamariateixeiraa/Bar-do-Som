@@ -11,7 +11,6 @@ import FuncionariosPage from './FuncionariosPage';
 import RelatoriosPage from './RelatoriosPage';
 import FuncoesProcedures from './FuncoesProcedures';
 import ConsultasViews from './ConsultasViews';
-// CORREÇÃO: Importa PedidosPage do arquivo PedidosPage.jsx
 import PedidosPage from './PedidosPage.jsx';
 
 function App() {
