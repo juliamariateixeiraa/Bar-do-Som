@@ -7,6 +7,9 @@ function FuncoesProcedures() {
     const [resultado, setResultado] = useState(null);
     const [logs, setLogs] = useState([]);
     const [logsDisponiveis, setLogsDisponiveis] = useState(true);
+    const [clienteIdPedido, setClienteIdPedido] = useState('');
+    const [produtoIdPedido, setProdutoIdPedido] = useState('');
+    const [quantidadePedido, setQuantidadePedido] = useState('');
 
     const API_BASE = 'http://localhost:8080'; // Ou a sua API_BASE real
 
@@ -225,6 +228,84 @@ function FuncoesProcedures() {
             <section className="funcao-section">
                 <h2>🔔 Triggers e Logs</h2>
 
+                <div className="funcao-card">
+                    <h3>Realizar Pedido e Baixa de Estoque (Trigger) 🛒</h3>
+                    <p>Insere um pedido e item. O Trigger **`tg_before_insert_pedido_produto`** reduz o estoque automaticamente.</p>
+                    <div className="funcao-form">
+                        <input 
+                            type="number" 
+                            placeholder="ID do Cliente (Ex: 1)" 
+                            value={clienteIdPedido}
+                            onChange={(e) => setClienteIdPedido(e.target.value)}
+                        />
+                        <input 
+                            type="number" 
+                            placeholder="ID do Produto" 
+                            value={produtoIdPedido}
+                            onChange={(e) => setProdutoIdPedido(e.target.value)}
+                        />
+                         <input 
+                            type="number" 
+                            placeholder="Quantidade" 
+                            value={quantidadePedido}
+                            onChange={(e) => setQuantidadePedido(e.target.value)}
+                        />
+                        <button onClick={() => {
+                            const idCliente = parseInt(clienteIdPedido);
+                            const idProduto = parseInt(produtoIdPedido);
+                            const quantidade = parseInt(quantidadePedido);
+
+                            if (!idCliente || !idProduto || !quantidade || quantidade <= 0) {
+                                setResultado({ erro: "Preencha IDs válidos e quantidade maior que zero." });
+                                return;
+                            }
+
+                            setLoading(true);
+
+                            const checkoutData = {
+                                idCliente: idCliente,
+                                total: 10.0, 
+                                itens: [
+                                    {
+                                        idProduto: idProduto,
+                                        quantidade: quantidade
+                                    }
+                                ]
+                            };
+
+                            fetch(`${API_BASE}/pedidos/checkout`, {
+                                method: 'POST', 
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(checkoutData)
+                            })
+                                .then(res => {
+                                    if (!res.ok) {
+                                        return res.text().then(text => { throw new Error(text); });
+                                    }
+                                    return res.text();
+                                })
+                                .then(data => {
+                                    setResultado({ 
+                                        sucesso: `Pedido realizado com sucesso!`,
+                                        detalhes: data,
+                                        aviso: `O Trigger de Estoque foi ativado no banco de dados. Verifique o estoque do Produto ID ${idProduto} na seção "Verificar Status do Estoque".`
+                                    });
+                                    setClienteIdPedido('');
+                                    setProdutoIdPedido('');
+                                    setQuantidadePedido('');
+                                    buscarLogs(); 
+                                    setLoading(false);
+                                })
+                                .catch(err => { 
+                                    setResultado({ erro: "Falha ao realizar pedido.", detalhes: err.message }); 
+                                    setLoading(false); 
+                                });
+                        }}>
+                            Fazer Pedido
+                        </button>
+                    </div>
+                </div>
+                
                 <div className="logs-container">
                     <div className="logs-header">
                         <h3>Histórico de Ações (Trigger de Log)</h3>
@@ -234,7 +315,6 @@ function FuncoesProcedures() {
                     {!logsDisponiveis ? (
                         <div style={{ textAlign: 'center', padding: '2rem', color: '#718096', background: '#f7fafc', borderRadius: '10px', margin: '1rem 0' }}>
                             <p style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>📋 Tabela de logs não encontrada</p>
-                            {/* Nome da tabela corrigido */}
                             <small>Crie a tabela <code>log_operacoes</code> no banco de dados</small>
                         </div>
                     ) : logs.length === 0 ? (
@@ -257,13 +337,10 @@ function FuncoesProcedures() {
                                     <tr key={idx}>
                                         <td>{log.data_hora ? new Date(log.data_hora).toLocaleString('pt-BR') : '-'}</td>
                                         
-                                        {/* CORRIGIDO: Mapeando para 'tabela_afetada' do BD */}
                                         <td>{log.tabela_afetada || '-'}</td>
                                         
-                                        {/* CORRIGIDO: Mapeando para 'operacao' do BD */}
                                         <td><span className={`badge ${(log.operacao || '').toLowerCase()}`}>{log.operacao || 'N/A'}</span></td>
                                         
-                                        {/* Mapeando para 'detalhes' do BD */}
                                         <td>{log.detalhes || '-'}</td>
                                     </tr>
                                 ))}
