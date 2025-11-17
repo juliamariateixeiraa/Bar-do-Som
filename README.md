@@ -86,6 +86,20 @@ Essas análises ajudam a compreender padrões de consumo e apoiar decisões estr
 
 ---
 
+## 🛠️ Pré-requisitos
+
+Antes de começar, garanta que tem as seguintes ferramentas instaladas:
+
+- [Git](https://git-scm.com/) (para clonar o repositório)
+- [Java JDK](https://www.oracle.com/java/technologies/downloads/) (o projeto usa Spring Boot; **versão 17 ou 21** é recomendada)
+- [Node.js](https://nodejs.org/) (para o Frontend; **versão 18.x ou 20.x** é recomendada)
+- [MySQL Server](https://dev.mysql.com/downloads/mysql/) (o banco de dados do projeto; **versão 8.0+** é recomendada)
+- [MySQL Workbench](https://dev.mysql.com/downloads/workbench/) (Recomendado para importar o `.sql`)
+
+> **Nota sobre o Maven:** O projeto inclui o *Maven Wrapper* (`mvnw` e `mvnw.cmd`). Significa que os utilizadores não precisam de instalar o Apache Maven manualmente. Podem usar `./mvnw spring-boot:run` (em Mac/Linux) ou `mvnw.cmd spring-boot:run` (em Windows) e o wrapper descarregará a versão correta do Maven automaticamente.
+
+---
+
 ## 🚀 Como clonar e rodar o projeto
 
 ### 1️⃣ Clone o repositório
@@ -130,6 +144,19 @@ npm run dev
 ```
 
 Frontend: `http://localhost:5173`
+
+### ❗Configure o Backend
+
+Edite o arquivo se for necessário: `Backend/src/main/resources/application.properties`
+
+❗ **Importante:** Garanta que a sua base de dados `bar_do_som`, que importamos no passo 2, está a ser executada em `localhost:3306`.
+
+O conteúdo do ficheiro `application.properties` deve ser:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/bar_do_som
+spring.datasource.username=root
+spring.datasource.password=Bardosom1234
 
 ---
 
