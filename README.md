@@ -157,7 +157,7 @@ O conteúdo do ficheiro `application.properties` deve ser:
 spring.datasource.url=jdbc:mysql://localhost:3306/bar_do_som
 spring.datasource.username=root
 spring.datasource.password=Bardosom1234
-
+```
 ---
 
 ## 👩‍💻 Integrantes do Projeto
