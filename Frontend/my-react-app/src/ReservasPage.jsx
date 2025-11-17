@@ -4,30 +4,48 @@ import './ReservasPage.css';
 
 function ReservasPage () {
   const [reservas, setReservas] = useState([]);
+  const [filteredReservas, setFilteredReservas] = useState([]); // Lista para renderização após filtro
+  const [searchTerm, setSearchTerm] = useState(''); // Termo digitado na busca
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchReservas = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/reservas'); 
-        
-        if (!response.ok) {
-          throw new Error('Erro ao buscar as reservas.');
-        }
-
-        const data = await response.json();
-        setReservas(data); 
-      } catch (err) {
-        console.error("Erro na requisição:", err);
-        setError(err.message); 
-      } finally {
-        setLoading(false); 
+  const fetchReservas = async () => {
+    try {
+      // Busca todas as reservas do backend
+      const response = await fetch('http://localhost:8080/reservas'); 
+      
+      if (!response.ok) {
+        throw new Error('Erro ao buscar as reservas.');
       }
-    };
 
+      const data = await response.json();
+      setReservas(data); 
+      setFilteredReservas(data); // Exibe todos inicialmente
+    } catch (err) {
+      console.error("Erro na requisição:", err);
+      setError(err.message); 
+      setReservas([]);
+      setFilteredReservas([]);
+    } finally {
+      setLoading(false); 
+    }
+  };
+
+  useEffect(() => {
     fetchReservas();
   }, []); 
+
+  // Lógica de filtragem no frontend (Client-side filtering)
+  useEffect(() => {
+    const lowerCaseSearch = searchTerm.toLowerCase();
+    
+    // Filtra a lista completa de reservas pelo nome do cliente
+    const results = reservas.filter(reserva =>
+      (reserva.nome_cliente || '').toLowerCase().includes(lowerCaseSearch)
+    );
+
+    setFilteredReservas(results);
+  }, [searchTerm, reservas]); // Re-executa sempre que o termo de busca ou a lista completa mudar
 
   if (loading) {
     return <div>Carregando reservas... ⏳</div>;
@@ -40,10 +58,25 @@ function ReservasPage () {
   return (
     <div className="reservas-container">
       <h1>Gerenciamento de Reservas 🗓️</h1>
-      <p>Total de Reservas encontradas: {reservas.length}</p>
+      
+      {/* Search Bar com Estilo Melhorado */}
+      <div className="search-wrapper">
+        <span className="search-icon">🔍</span>
+        <input
+          type="text"
+          placeholder="Pesquisar por nome do Cliente..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input" 
+        />
+      </div>
+      
+      <p>Total de Reservas encontradas: {filteredReservas.length}</p>
 
-      {reservas.length === 0 ? (
+      {filteredReservas.length === 0 && !searchTerm ? (
         <div className="reservas-vazio">Não há reservas cadastradas.</div>
+      ) : filteredReservas.length === 0 && searchTerm ? (
+        <div className="reservas-vazio">Nenhuma reserva encontrada para "{searchTerm}".</div>
       ) : (
         <div className="reservas-table-wrapper">
           <table className="reservas-table">
@@ -57,7 +90,8 @@ function ReservasPage () {
               </tr>
             </thead>
             <tbody>
-              {reservas.map(reserva => (
+              {/* Renderiza a lista filtrada */}
+              {filteredReservas.map(reserva => (
                 <tr key={reserva.id_reserva}>
                   <td>{reserva.id_reserva}</td>
                   <td>{reserva.nome_cliente}</td>
@@ -72,19 +106,6 @@ function ReservasPage () {
       )}
     </div>
   );
-
 }
-
-const tableHeaderStyle = {
-  border: '1px solid #ddd',
-  padding: '8px',
-  textAlign: 'left',
-  fontWeight: 'bold',
-};
-
-const tableCellStyle = {
-  border: '1px solid #ddd',
-  padding: '8px',
-};
 
 export default ReservasPage;

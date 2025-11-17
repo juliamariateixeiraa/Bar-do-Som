@@ -113,3 +113,57 @@
         font-size: 1.6rem;
     }
 }
+
+/* --- Estilos para uma Barra de Pesquisa Moderna --- */
+
+.search-wrapper {
+    position: relative;
+    margin-bottom: 25px;
+    width: 350px; /* Define uma largura padrão para a barra */
+}
+
+.search-input {
+    width: 100%;
+    /* Adiciona padding à esquerda para acomodar o ícone */
+    padding: 10px 10px 10px 40px; 
+    border: 1px solid #D1D5DB; /* Cor da borda mais suave */
+    border-radius: 25px; /* Bordas bem arredondadas */
+    font-size: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s; /* Transições suaves */
+}
+
+.search-input:focus {
+    border-color: #667eea; /* Cor de foco primária (azul-roxo do dashboard) */
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2); /* Sombra de foco */
+    outline: none; /* Remove a borda padrão do navegador */
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px; /* Posição do ícone dentro do wrapper */
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6B7280; /* Cor cinza para o ícone */
+    font-size: 18px;
+    pointer-events: none; /* Garante que o ícone não atrapalhe a digitação */
+}
+
+/* --- Estilo unificado para o cabeçalho das tabelas (thead) --- */
+
+/* Alvos: cabeçalho da tabela de Reservas e de Funcionários */
+.reservas-table thead th,
+.table-func thead th {
+    background-color: #F0F4F8; /* Um cinza muito claro, quase branco azulado */
+    color: #4A5568; /* Texto escuro para alta legibilidade */
+    font-weight: 600; /* Um pouco menos negrito para ser mais leve */
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    padding: 12px 15px;
+    border-bottom: 2px solid #CBD5E0; /* Linha de separação mais forte */
+}
+
+/* Melhoria na aparência das linhas para legibilidade */
+.reservas-table tbody tr:hover,
+.table-func tbody tr:hover {
+    background-color: #f7fafc; 
+}
