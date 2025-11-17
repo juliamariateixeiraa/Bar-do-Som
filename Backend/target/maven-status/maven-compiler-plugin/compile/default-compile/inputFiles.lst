@@ -9,6 +9,7 @@
 /home/t-cio/Área de trabalho/barp/Bar-do-Som/Backend/src/main/java/br/com/bardosom/api/controller/PedidoController.java
 /home/t-cio/Área de trabalho/barp/Bar-do-Som/Backend/src/main/java/br/com/bardosom/api/controller/ProdutoController.java
 /home/t-cio/Área de trabalho/barp/Bar-do-Som/Backend/src/main/java/br/com/bardosom/api/controller/RelatorioController.java
+/home/t-cio/Área de trabalho/barp/Bar-do-Som/Backend/src/main/java/br/com/bardosom/api/controller/ReservaController.java
 /home/t-cio/Área de trabalho/barp/Bar-do-Som/Backend/src/main/java/br/com/bardosom/api/dao/ClienteDAO.java
 /home/t-cio/Área de trabalho/barp/Bar-do-Som/Backend/src/main/java/br/com/bardosom/api/dao/DashboardDAO.java
 /home/t-cio/Área de trabalho/barp/Bar-do-Som/Backend/src/main/java/br/com/bardosom/api/dao/EventoDAO.java
@@ -17,3 +18,4 @@
 /home/t-cio/Área de trabalho/barp/Bar-do-Som/Backend/src/main/java/br/com/bardosom/api/dao/PedidoDAO.java
 /home/t-cio/Área de trabalho/barp/Bar-do-Som/Backend/src/main/java/br/com/bardosom/api/dao/ProdutoDAO.java
 /home/t-cio/Área de trabalho/barp/Bar-do-Som/Backend/src/main/java/br/com/bardosom/api/dao/RelatorioDAO.java
+/home/t-cio/Área de trabalho/barp/Bar-do-Som/Backend/src/main/java/br/com/bardosom/api/dao/ReservaDAO.java
