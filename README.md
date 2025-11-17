@@ -7,7 +7,9 @@ Este projeto tem como objetivo o desenvolvimento de um **sistema de gerenciament
 A aplicação foi projetada para **otimizar o funcionamento do bar**, oferecendo uma visão integrada das operações e facilitando a tomada de decisões baseadas em dados.
 
 ---
-
+### Importante!
+- Projeto principal na Branch Main e arquivos do Banco de Dados na Branch Arquivos Importantes
+---
 ## 🎯 Objetivos da Aplicação
 
 - Facilitar **reservas de mesas** por clientes  
