@@ -44,8 +44,6 @@ function ProdutosPage() {
     return (
         <div className="produtos-container">
             <h1>📦 Produtos Disponíveis</h1>
-
-            <button onClick={buscarProdutos} className="refresh-btn">🔄 Atualizar Lista</button>
             
             {loading && <p style={{ textAlign: 'center', marginTop: '20px' }}>Carregando produtos...</p>}
 
