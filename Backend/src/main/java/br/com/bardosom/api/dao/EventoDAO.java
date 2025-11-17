@@ -14,7 +14,6 @@ public class EventoDAO {
     private JdbcTemplate jdbcTemplate;
 
     public List<Map<String, Object>> listarTodos() {
-        // CORRETO: Usa id_evento
         String sql = "SELECT id_evento, nome, data, hora, valor_ingresso, publico_estimado FROM eventos";
         return jdbcTemplate.queryForList(sql);
     }
@@ -25,20 +24,16 @@ public class EventoDAO {
     }
 
     public void atualizarEvento(int id_evento, String nome, String data, String hora, double valorIngresso, int publicoEstimado) {
-        // CORRIGIDO: Usa id_evento no WHERE
         String sql = "UPDATE eventos SET nome = ?, data = ?, hora = ?, valor_ingresso = ?, publico_estimado = ? WHERE id_evento = ?";
         jdbcTemplate.update(sql, nome, data, hora, valorIngresso, publicoEstimado, id_evento);
     }
 
     public void deletarEvento(int id_evento) {
-        // CORRIGIDO: Usa id_evento no WHERE
         String sql = "DELETE FROM eventos WHERE id_evento = ?";
         jdbcTemplate.update(sql, id_evento);
     }
 
     public List<Map<String, Object>> listarPorPeriodo(String inicio, String fim) {
-        // Assumindo que sua tabela tem todas as colunas, usar '*' pode ser ok aqui,
-        // mas é sempre mais seguro listar as colunas explicitamente.
         String sql = "SELECT id_evento, nome, data, hora, valor_ingresso, publico_estimado FROM eventos WHERE data BETWEEN ? AND ?";
         return jdbcTemplate.queryForList(sql, inicio, fim);
     }
@@ -49,7 +44,6 @@ public class EventoDAO {
     }
 
     public List<Map<String, Object>> listarClientesEmEventos() {
-        // Este método ainda está vazio.
         return new java.util.ArrayList<>();
     }
 
@@ -59,7 +53,6 @@ public class EventoDAO {
     }
 
     public List<Map<String, Object>> listarPorPublicoExato(int publico) {
-        // CORRIGIDO: Seleciona id_evento
         String sql = "SELECT id_evento, nome, data, hora, valor_ingresso, publico_estimado FROM eventos WHERE publico_estimado = ?";
         return jdbcTemplate.queryForList(sql, publico);
     }
@@ -104,5 +97,11 @@ public class EventoDAO {
     public void ajustarPublicoEstimado() {
         String sql = "CALL AjustarPublicoEstimadoEventos()";
         jdbcTemplate.update(sql);
+    }
+
+    public List<Map<String, Object>> buscarTodosEventos() {
+        String sql = "SELECT id_evento, nome, data, hora, valor_ingresso, publico_estimado FROM eventos";
+        
+        return jdbcTemplate.queryForList(sql);
     }
 }

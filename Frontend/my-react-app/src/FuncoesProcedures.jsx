@@ -9,6 +9,7 @@ function FuncoesProcedures() {
     const [clienteIdPedido, setClienteIdPedido] = useState('');
     const [produtoIdPedido, setProdutoIdPedido] = useState('');
     const [quantidadePedido, setQuantidadePedido] = useState('');
+    const [eventos, setEventos] = useState([]);
 
     const API_BASE = 'http://localhost:8080';
 
@@ -219,27 +220,40 @@ function FuncoesProcedures() {
                         fetch(`${API_BASE}/eventos/ajustar-publico`, { 
                             method: 'POST' 
                         })
-                            .then(res => {
-                                if (res.ok) {
-                                    return res.text();
-                                }
-                                return res.text().then(text => { throw new Error(text); });
-                            })
-                            .then(data => { 
-                              
-                                setResultado({ 
-                                    type: 'ajustePublico', 
-                                    mensagem: data, 
-                                    processo: "Procedure SQL com Cursors",
-                                    descricao: "A Procedure iterou sobre os eventos, usando um cursor para recalcular o público estimado com base em regras internas (ex: número de artistas ou tamanho do local).",
-                                    dataHora: new Date().toLocaleString('pt-BR'),
-                                }); 
-                                setLoading(false); 
-                            })
-                            .catch(err => { 
-                                setResultado({ erro: err.message }); 
-                                setLoading(false); 
+                        .then(res => {
+                            if (!res.ok) {
+                                return res.text().then(text => { 
+                                    throw new Error("Erro da API: " + text); 
+                                });
+                            }
+                            return res.json(); 
+                        })
+                        .then(eventosAtualizados => {
+                            const totalEventosProcessados = eventosAtualizados.length;
+                            
+                            const publicoTotalFinal = eventosAtualizados.reduce((sum, evento) => {
+                                return sum + (evento.publico_estimado || 0); 
+                            }, 0);
+                             
+                            setEventos(eventosAtualizados); 
+
+                            setResultado({ 
+                                type: 'ajustePublico', 
+                                mensagem: `Ajuste de Público Concluído (Processados: ${totalEventosProcessados})`, 
+                                processo: "Procedure SQL com Cursors",
+                                descricao: `A Procedure ajustou o público de ${totalEventosProcessados} eventos. O público total estimado final é de ${publicoTotalFinal} pessoas.`, 
+                                dataHora: new Date().toLocaleString('pt-BR'),
+                                
+                                contagemAjustada: totalEventosProcessados, 
+                                publicoAjustado: publicoTotalFinal, 
                             });
+                            setLoading(false); 
+                        })
+                        .catch(err => { 
+                            console.error(err);
+                            setResultado({ erro: err.message }); 
+                            setLoading(false); 
+                        });
                     }}>
                         Ajustar Público
                     </button>
@@ -499,32 +513,17 @@ function FuncoesProcedures() {
                         <div className="evento-resultado-card">
                             <h4 style={{ color: '#00B5AD', marginBottom: '1rem' }}>📈 Ajuste de Público Concluído</h4>
                             
-                            <div className="evento-info-item">
-                                <span className="evento-label">Procedimento Executado:</span>
-                                <span className="evento-value destaque-evento">{resultado.processo}</span>
-                            </div>
                             
                             <div className="evento-info-item">
                                 <span className="evento-label">🔢 Eventos Ajustados:</span>
-                                <span className="evento-value destaque-evento-num">{resultado.eventosAjustados || 0}</span>
-                            </div>
-                            <div className="evento-info-item">
-                                <span className="evento-label">👥 Público Ajustado (Total):</span>
-                                <span className="evento-value destaque-evento-num">{resultado.totalAjuste || 0}</span>
-                            </div>
-
-                            <div className="evento-info-item">
-                                <span className="evento-label">Data e Hora:</span>
-                                <span className="evento-value">{resultado.dataHora}</span>
+                                <span className="evento-value destaque-evento-num">{resultado.contagemAjustada || 0}</span>
                             </div>
                             
-                            <p style={{ marginTop: '15px', color: '#4A5568', fontSize: '0.95rem', borderLeft: '3px solid #00B5AD', paddingLeft: '10px' }}>
-                                <strong>Descrição da Ação:</strong> {resultado.descricao}
-                            </p>
+                            <div className="evento-info-item">
+                                <span className="evento-label">👥 Público Ajustado (Total):</span>
+                                <span className="evento-value destaque-evento-num">{resultado.publicoAjustado || 0}</span>
+                            </div>
 
-                            <p style={{ marginTop: '10px', fontSize: '0.9rem', fontStyle: 'italic', color: '#4A5568' }}>
-                                Mensagem do Servidor: {resultado.mensagem}
-                            </p>
                         </div>
                     ) : (
                         <pre>{JSON.stringify(resultado, null, 2)}</pre>
