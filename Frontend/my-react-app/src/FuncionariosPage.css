@@ -1,0 +1,188 @@
+.container-func {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 25px 30px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  animation: fadeIn 0.45s ease;
+  min-height: 80vh;
+  box-sizing: border-box;
+}
+
+.title-func {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.loading-func {
+  text-align: center;
+  font-size: 1.05rem;
+  color: #0d6efd;
+  background: #e8f4ff;
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 16px;
+}
+
+.error-box-func {
+  background: #ffe5e5;
+  color: #c0392b;
+  border-left: 5px solid #e74c3c;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.empty-box-func {
+  background: #fff4e6;
+  color: #7a5a00;
+  padding: 16px;
+  border-radius: 10px;
+  margin-top: 16px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+}
+
+.table-container-func {
+  overflow-x: auto;
+  margin-top: 22px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.table-func {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.table-func thead {
+  background: #0d6efd;
+  color: #fff;
+}
+
+.table-func th {
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  text-align: left;
+  font-weight: 700;
+}
+
+.table-func td {
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  color: #2d3436;
+  border-bottom: 1px solid #eee;
+}
+
+.table-func tbody tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.table-func tbody tr:hover {
+  background: #e7f1ff;
+}
+
+.tag-cargo {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.78rem;
+  display: inline-block;
+}
+
+.tag-cargo.gerente {
+  background: #e6edff;
+  color: #24348f;
+}
+
+
+.tag-cargo.barman {
+  background: #f3e8ff;
+  color: #6b21a8;
+}
+
+.tag-cargo.outros {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 700px) {
+  .container-func { padding: 18px; }
+  .table-func th, .table-func td { padding: 10px; font-size: 0.85rem; }
+  .title-func { font-size: 1.6rem; }
+}
+
+
+.tag-cargo.gerente {
+  background: #e6edff;
+  color: #24348f;
+}
+
+.tag-cargo.barman {
+  background: #f3e8ff;
+  color: #6b21a8;
+}
+
+.tag-cargo.cozinheiro,
+.tag-cargo.cozinha,
+.tag-cargo.chef-de-cozinha {
+  background: #fff4c2;
+  color: #8a6d00;
+}
+
+.tag-cargo.garcom {
+  background: #d6f5ff;
+  color: #005f7f;
+}
+
+.tag-cargo.auxiliar {
+  background: #ffe6f2;
+  color: #b3005c;
+}
+
+.tag-cargo.seguranca {
+  background: #e2ffe2;
+  color: #145214;
+}
+
+.tag-cargo.limpeza {
+  background: #f0e8ff;
+  color: #4a2a99;
+}
+
+.tag-cargo.caixa {
+  background: #fff0e1;
+  color: #8a4b00;
+}
+
+.tag-cargo.supervisor {
+  background: #e1f3ff;
+  color: #004a80;
+}
+
+.tag-cargo.administrativo {
+  background: #fde2ff;
+  color: #7a0080;
+}
+
+.tag-cargo.motorista {
+  background: #e1ffe9;
+  color: #0b592a;
+}
+
+.tag-cargo.outros {
+  background: #d1fae5;
+  color: #065f46;
+}
+

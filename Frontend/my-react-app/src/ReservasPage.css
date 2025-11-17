@@ -1,4 +1,4 @@
-.produtos-container {
+.reservas-container {
     max-width: 1100px;
     margin: 40px auto;
     padding: 25px 30px;
@@ -8,62 +8,75 @@
     animation: fadeIn 0.45s ease;
 }
 
-.produtos-container h1 {
+.reservas-container h1 {
     font-size: 2rem;
+    margin-bottom: 20px;
     text-align: center;
-    margin-bottom: 25px;
     color: #2c3e50;
-    font-weight: bold;
+    font-weight: 700;
 }
 
-.error-message, 
-.no-data {
+.reservas-container p {
+    font-size: 1rem;
+    color: #2d3436;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.reservas-loading,
+.reservas-erro,
+.reservas-vazio {
+    text-align: center;
+    font-size: 1.1rem;
     margin-top: 20px;
     padding: 15px;
     border-radius: 10px;
-    font-size: 1.1rem;
-    text-align: center;
 }
 
-.error-message {
+.reservas-loading {
+    background: #e8f4ff;
+    color: #0d6efd;
+}
+
+.reservas-erro {
     background: #ffe5e5;
     color: #c0392b;
     border-left: 5px solid #e74c3c;
 }
 
-.no-data {
-    background: #ecf0f1;
-    color: #34495e;
-    border-left: 5px solid #95a5a6;
+.reservas-vazio {
+    background: #f1f1f1;
+    color: #555;
+    border-left: 5px solid #888;
 }
 
-.produtos-tabela-wrapper {
+.reservas-table-wrapper {
     overflow-x: auto;
-}
-
-.produtos-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
     margin-top: 20px;
 }
 
-.produtos-table thead {
-    background: #007bff; 
+.reservas-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.reservas-table thead {
+    background: #0d6efd;
     color: white;
 }
 
-.produtos-table th {
-    padding: 14px;
-    font-size: 1rem;
-    letter-spacing: .3px;
+.reservas-table th {
+    padding: 12px 14px;
+    font-size: .95rem;
     text-align: center;
+    font-weight: bold;
 }
 
-.produtos-table td {
+.reservas-table td {
     padding: 12px;
     font-size: .95rem;
     color: #2d3436;
@@ -71,13 +84,13 @@
     border-bottom: 1px solid #eee;
 }
 
-.produtos-table tbody tr:nth-child(even) {
+.reservas-table tbody tr:nth-child(even) {
     background: #f8f9fa;
 }
 
-.produtos-table tbody tr:hover {
+.reservas-table tbody tr:hover {
     background: #e7f1ff;
-    transition: .25s;
+    transition: 0.2s;
 }
 
 @keyframes fadeIn {
@@ -86,18 +99,17 @@
 }
 
 @media (max-width: 700px) {
-    .produtos-container {
-        padding: 15px;
+    .reservas-container {
+        padding: 18px;
     }
 
-    .produtos-table th, 
-    .produtos-table td {
+    .reservas-table th,
+    .reservas-table td {
         padding: 10px;
-        font-size: .85rem;
+        font-size: 0.85rem;
     }
 
-    .produtos-container h1 {
-        font-size: 1.5rem;
+    .reservas-container h1 {
+        font-size: 1.6rem;
     }
 }
-

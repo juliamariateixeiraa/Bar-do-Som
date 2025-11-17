@@ -7,10 +7,8 @@ import {
 import './RelatoriosPage.css';
 
 function RelatoriosPage() {
-    // Estados dos gráficos originais
     const [clientesPorMes, setClientesPorMes] = useState([]);
 
-    // Estados dos novos gráficos
     const [vendasPorTipo, setVendasPorTipo] = useState([]);
     const [eventosPorEstilo, setEventosPorEstilo] = useState([]);
     const [clientesFaixaEtaria, setClientesFaixaEtaria] = useState([]);
@@ -34,7 +32,6 @@ function RelatoriosPage() {
         try {
             setLoading(true);
 
-            // Carrega dados originais + novos dados
             const [resMes, resVendas, resEventos, resFaixaEtaria] = await Promise.all([
                 fetch('http://localhost:8080/clientes/por-mes-nascimento'),
                 fetch('http://localhost:8080/relatorios/vendas-por-tipo'),
@@ -169,13 +166,11 @@ function RelatoriosPage() {
                 </button>
             </header>
 
-            {/* ========== SEÇÃO 1: ANÁLISE DE CLIENTES ========== */}
             <div className="secao-titulo">
                 <h2>👥 Análise de Clientes</h2>
             </div>
 
             <div className="dashboard-grid">
-                {/* Card de Resumo - Clientes */}
                 <div className="card card-resumo">
                     <h3>Resumo Geral - Clientes</h3>
                     <div className="resumo-stats">
@@ -198,7 +193,6 @@ function RelatoriosPage() {
                     </div>
                 </div>
 
-                {/* Gráfico de Barras - Clientes por Mês */}
                 <div className="card card-grafico">
                     <h3>📊 Clientes por Mês de Nascimento (Gráfico de Barras)</h3>
                     <p className="card-subtitle">Clique nas barras para ver detalhes dos clientes</p>
@@ -229,7 +223,6 @@ function RelatoriosPage() {
                     </ResponsiveContainer>
                 </div>
 
-                {/* Gráfico de Linha - Clientes */}
                 <div className="card card-grafico">
                     <h3>📈 Tendência ao Longo do Ano (Gráfico de Linha)</h3>
                     <ResponsiveContainer width="100%" height={300}>
@@ -258,7 +251,6 @@ function RelatoriosPage() {
                     </ResponsiveContainer>
                 </div>
 
-                {/* Gráfico de Pizza - Clientes */}
                 <div className="card card-grafico">
                     <h3>🎂 Distribuição de Aniversários (Gráfico de Pizza)</h3>
                     <ResponsiveContainer width="100%" height={300}>
@@ -282,7 +274,6 @@ function RelatoriosPage() {
                     </ResponsiveContainer>
                 </div>
 
-                {/* NOVO GRÁFICO 1: Perfil Demográfico - Faixa Etária */}
                 <div className="card card-grafico card-destaque card-full-width">
                     <h3>👥 Perfil Demográfico - Clientes por Faixa Etária</h3>
                     <p className="card-subtitle">Análise detalhada do perfil dos clientes do Bar do Som</p>
@@ -354,7 +345,6 @@ function RelatoriosPage() {
                     </ResponsiveContainer>
                 </div>
 
-                {/* Tabela de Dados - Clientes por Mês */}
                 <div className="card card-tabela">
                     <h3>📋 Dados Detalhados - Aniversariantes por Mês</h3>
                     <div className="tabela-scroll">
@@ -391,13 +381,11 @@ function RelatoriosPage() {
                 </div>
             </div>
 
-            {/* ========== SEÇÃO 2: ANÁLISE DE VENDAS ========== */}
             <div className="secao-titulo">
                 <h2>💰 Análise de Vendas</h2>
             </div>
 
             <div className="dashboard-grid">
-                {/* NOVO GRÁFICO 2: Vendas por Tipo de Produto */}
                 <div className="card card-grafico card-destaque">
                     <h3>🍕 Vendas por Tipo de Produto</h3>
                     <p className="card-subtitle">Distribuição entre Bebidas e Comidas - Clique nos segmentos</p>
@@ -436,13 +424,11 @@ function RelatoriosPage() {
                 </div>
             </div>
 
-            {/* ========== SEÇÃO 3: ANÁLISE DE EVENTOS ========== */}
             <div className="secao-titulo">
                 <h2>🎵 Análise de Eventos Musicais</h2>
             </div>
 
             <div className="dashboard-grid">
-                {/* NOVO GRÁFICO 3: Eventos por Estilo Musical */}
                 <div className="card card-grafico card-destaque card-full-width">
                     <h3>🎵 Análise de Eventos por Estilo Musical</h3>
                     <p className="card-subtitle">Receita estimada e quantidade de eventos por estilo</p>
@@ -473,7 +459,6 @@ function RelatoriosPage() {
                         </RadarChart>
                     </ResponsiveContainer>
 
-                    {/* Tabela Mini de Eventos */}
                     <div className="tabela-mini-scroll">
                         <table className="tabela-mini">
                             <thead>
@@ -506,7 +491,6 @@ function RelatoriosPage() {
                 </div>
             </div>
 
-            {/* Modal de Detalhes - Clientes por Mês */}
             {mesDetalhes && (
                 <div className="modal-overlay" onClick={fecharDetalhes}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -534,7 +518,6 @@ function RelatoriosPage() {
                 </div>
             )}
 
-            {/* Modal de Detalhes - Novos Gráficos */}
             {detalhesModal && (
                 <div className="modal-overlay" onClick={fecharDetalhesModal}>
                     <div className="modal-content modal-large" onClick={(e) => e.stopPropagation()}>

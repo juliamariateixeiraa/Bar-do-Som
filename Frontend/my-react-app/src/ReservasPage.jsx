@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import './ReservasPage.css';
+
 function ReservasPage () {
   const [reservas, setReservas] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,38 +38,41 @@ function ReservasPage () {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="reservas-container">
       <h1>Gerenciamento de Reservas 🗓️</h1>
-      <p>Total de Reservas encontradas: **{reservas.length}**</p>
+      <p>Total de Reservas encontradas: {reservas.length}</p>
 
       {reservas.length === 0 ? (
-        <p>Não há reservas cadastradas.</p>
+        <div className="reservas-vazio">Não há reservas cadastradas.</div>
       ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '15px' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f2f2f2' }}>
-              <th style={tableHeaderStyle}>ID Reserva</th>
-              <th style={tableHeaderStyle}>Cliente</th>
-              <th style={tableHeaderStyle}>Mesa</th>
-              <th style={tableHeaderStyle}>Evento</th>
-              <th style={tableHeaderStyle}>Data da Reserva</th>
-            </tr>
-          </thead>
-          <tbody>
-            {reservas.map((reserva) => (
-              <tr key={reserva.id_reserva}>
-                <td style={tableCellStyle}>{reserva.id_reserva}</td>
-                <td style={tableCellStyle}>**{reserva.nome_cliente}**</td>
-                <td style={tableCellStyle}>{reserva.numero_mesa}</td>
-                <td style={tableCellStyle}>{reserva.nome_evento}</td>
-                <td style={tableCellStyle}>{new Date(reserva.data_reserva).toLocaleDateString()}</td>
+        <div className="reservas-table-wrapper">
+          <table className="reservas-table">
+            <thead>
+              <tr>
+                <th>ID Reserva</th>
+                <th>Cliente</th>
+                <th>Mesa</th>
+                <th>Evento</th>
+                <th>Data da Reserva</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {reservas.map(reserva => (
+                <tr key={reserva.id_reserva}>
+                  <td>{reserva.id_reserva}</td>
+                  <td>{reserva.nome_cliente}</td>
+                  <td>{reserva.numero_mesa}</td>
+                  <td>{reserva.nome_evento}</td>
+                  <td>{new Date(reserva.data_reserva).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
+
 }
 
 const tableHeaderStyle = {
